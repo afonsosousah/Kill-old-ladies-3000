@@ -23,30 +23,30 @@ def car_racing():
 
     size = (SCREENWIDTH, SCREENHEIGHT)
     screen = pygame.display.set_mode(size)
-    pygame.display.set_caption("Car Racing")
+    pygame.display.set_caption("Turbo Racing 3000")
 
     #This will be a list that will contain all the sprites we intend to use in our game.
     all_sprites_list = pygame.sprite.Group()
 
 
-    playerCar = Car(RED, 60, 80, 70)
+    playerCar = Car(RED, 60, 80, 70, random.randint(1,6), False)
     playerCar.rect.x = 160
-    playerCar.rect.y = SCREENHEIGHT - 100
+    playerCar.rect.y = SCREENHEIGHT - 110
 
-    car1 = Car(PURPLE, 60, 80, random.randint(50,100))
-    car1.rect.x = 60
+    car1 = Car(PURPLE, 60, 80, random.randint(50,100), random.randint(1,6))
+    car1.rect.x = 195
     car1.rect.y = -100
 
-    car2 = Car(YELLOW, 60, 80, random.randint(50,100))
-    car2.rect.x = 160
+    car2 = Car(YELLOW, 60, 80, random.randint(50,100), random.randint(1,6))
+    car2.rect.x = 285
     car2.rect.y = -600
 
-    car3 = Car(CYAN, 60, 80, random.randint(50,100))
-    car3.rect.x = 260
+    car3 = Car(CYAN, 60, 80, random.randint(50,100), random.randint(1,6))
+    car3.rect.x = 375
     car3.rect.y = -300
 
-    car4 = Car(BLUE, 60, 80, random.randint(50,100))
-    car4.rect.x = 360
+    car4 = Car(BLUE, 60, 80, random.randint(50,100), random.randint(1,6))
+    car4.rect.x = 465
     car4.rect.y = -900
 
 
@@ -77,13 +77,13 @@ def car_racing():
                          playerCar.moveRight(10)
 
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_LEFT]:
+            if keys[pygame.K_LEFT] or keys[pygame.K_a]:
                 playerCar.moveLeft(5)
-            if keys[pygame.K_RIGHT]:
+            if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                 playerCar.moveRight(5)
-            if keys[pygame.K_UP]:
+            if keys[pygame.K_UP] or keys[pygame.K_w]:
                 speed += 0.05
-            if keys[pygame.K_DOWN]:
+            if keys[pygame.K_DOWN] or keys[pygame.K_s]:
                 speed -= 0.05
 
 
@@ -104,6 +104,7 @@ def car_racing():
 
             all_sprites_list.update()
 
+            '''
             #Drawing on Screen
             screen.fill(GREEN)
             #Draw The Road
@@ -114,6 +115,12 @@ def car_racing():
             pygame.draw.line(screen, WHITE, [240,0],[240,SCREENHEIGHT],5)
             #Draw Line painting on the road
             pygame.draw.line(screen, WHITE, [340,0],[340,SCREENHEIGHT],5)
+            '''
+            
+            # load backgroud grass texture
+            screen.blit(pygame.image.load("assets/grass.png"), [0,0, SCREENWIDTH,SCREENHEIGHT])
+            # load road
+            screen.blit(pygame.image.load("assets/road.png"), [0,0, SCREENWIDTH,SCREENHEIGHT])
 
 
             #Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
