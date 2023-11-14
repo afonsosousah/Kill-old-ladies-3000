@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 WHITE = (255, 255, 255)
 
 class Car(pygame.sprite.Sprite):
@@ -22,6 +22,7 @@ class Car(pygame.sprite.Sprite):
         self.height = height
         self.color = color
         self.speed = speed
+        self.flip = flip
 
         # Draw the car (a rectangle!)
             #pygame.draw.rect(self.image, self.color, [0, 0, self.width, self.height])
@@ -51,3 +52,6 @@ class Car(pygame.sprite.Sprite):
     def repaint(self, color):
         self.color = color
         #pygame.draw.rect(self.image, self.color, [0, 0, self.width, self.height])
+        self.image = pygame.image.load(f"assets/car{random.randint(1,6)}.png").convert_alpha()
+        if self.flip:
+            self.image = pygame.transform.flip(self.image, True, True)

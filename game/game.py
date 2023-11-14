@@ -47,7 +47,11 @@ def car_racing():
 
     car4 = Car(BLUE, 60, 80, random.randint(50,100), random.randint(1,6))
     car4.rect.x = 465
-    car4.rect.y = -900
+    car4.rect.y = -1000
+    
+    car5 = Car(GREY, 60, 80, random.randint(50,100), random.randint(1,6))
+    car5.rect.x = 555
+    car5.rect.y = -400
 
 
     # Add the car to the list of objects
@@ -56,12 +60,14 @@ def car_racing():
     all_sprites_list.add(car2)
     all_sprites_list.add(car3)
     all_sprites_list.add(car4)
+    all_sprites_list.add(car5)
 
     all_coming_cars = pygame.sprite.Group()
     all_coming_cars.add(car1)
     all_coming_cars.add(car2)
     all_coming_cars.add(car3)
     all_coming_cars.add(car4)
+    all_coming_cars.add(car5)
 
 
     #Allowing the user to close the window...
@@ -78,9 +84,9 @@ def car_racing():
 
             keys = pygame.key.get_pressed()
             if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-                playerCar.moveLeft(5)
+                playerCar.moveLeft(8)
             if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-                playerCar.moveRight(5)
+                playerCar.moveRight(8)
             if keys[pygame.K_UP] or keys[pygame.K_w]:
                 speed += 0.05
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:
