@@ -1,6 +1,7 @@
 import pygame, random
-#Let's import the Car Class
+# Let's import the Car class and the Map class
 from car import Car
+from map import Map
 
 def car_racing():
     pygame.init()
@@ -16,6 +17,7 @@ def car_racing():
 
     speed = 1
     colorList = (RED, GREEN, PURPLE, YELLOW, CYAN, BLUE)
+    car_crash = False
 
 
     SCREENWIDTH=800
@@ -30,7 +32,7 @@ def car_racing():
 
 
     playerCar = Car(RED, 60, 80, 70, random.randint(1,6), False)
-    playerCar.rect.x = 160
+    playerCar.rect.x = SCREENWIDTH/2 - 60/2
     playerCar.rect.y = SCREENHEIGHT - 110
 
     car1 = Car(PURPLE, 60, 80, random.randint(50,100), random.randint(1,6))
@@ -38,20 +40,35 @@ def car_racing():
     car1.rect.y = -100
 
     car2 = Car(YELLOW, 60, 80, random.randint(50,100), random.randint(1,6))
-    car2.rect.x = 285
+    car2.rect.x = 315
     car2.rect.y = -600
 
     car3 = Car(CYAN, 60, 80, random.randint(50,100), random.randint(1,6))
-    car3.rect.x = 375
+    car3.rect.x = 435
     car3.rect.y = -300
 
     car4 = Car(BLUE, 60, 80, random.randint(50,100), random.randint(1,6))
-    car4.rect.x = 465
+    car4.rect.x = 555
     car4.rect.y = -1000
     
     car5 = Car(GREY, 60, 80, random.randint(50,100), random.randint(1,6))
-    car5.rect.x = 555
+    car5.rect.x = 675
     car5.rect.y = -400
+
+
+    # Game background
+    map1 = Map(SCREENWIDTH, SCREENHEIGHT*2, 25)
+    map2 = Map(SCREENWIDTH, SCREENHEIGHT*2, 25)
+    map1.rect.y = 600  # put the second map above the first
+    map2.rect.y = -600
+    
+    # Add maps to list of objects
+    all_sprites_list.add(map1)
+    all_sprites_list.add(map2)
+    
+    maps_group = pygame.sprite.Group()
+    maps_group.add(map1)
+    maps_group.add(map2)
 
 
     # Add the car to the list of objects
@@ -60,24 +77,24 @@ def car_racing():
     all_sprites_list.add(car2)
     all_sprites_list.add(car3)
     all_sprites_list.add(car4)
-    all_sprites_list.add(car5)
 
     all_coming_cars = pygame.sprite.Group()
     all_coming_cars.add(car1)
     all_coming_cars.add(car2)
     all_coming_cars.add(car3)
     all_coming_cars.add(car4)
-    all_coming_cars.add(car5)
 
 
-    #Allowing the user to close the window...
+    # Allowing the user to close the window...
     carryOn = True
     clock=pygame.time.Clock()
+    
 
     while carryOn:
             for event in pygame.event.get():
                 if event.type==pygame.QUIT:
                     carryOn=False
+                    pygame.quit()
                 elif event.type==pygame.KEYDOWN:
                     if event.key==pygame.K_x:
                          playerCar.moveRight(10)
@@ -88,12 +105,14 @@ def car_racing():
             if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                 playerCar.moveRight(8)
             if keys[pygame.K_UP] or keys[pygame.K_w]:
-                speed += 0.05
+                if speed + 0.05 < 3:
+                    speed += 0.05
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                speed -= 0.05
+                if speed - 0.05 > 0.5:
+                    speed -= 0.05
 
 
-            #Game Logic
+            # Game Logic
             for car in all_coming_cars:
                 car.moveForward(speed)
                 if car.rect.y > SCREENHEIGHT:
@@ -105,8 +124,18 @@ def car_racing():
                 car_collision_list = pygame.sprite.spritecollide(playerCar, all_coming_cars, False)
                 for car in car_collision_list:
                     print("Car crash!")
-                    # End Of Game
-                    carryOn = False
+                    car_crash = True
+            
+            
+            # Infinite scrolling map
+            map1.moveDown(speed)
+            map2.moveDown(speed)
+            print(map1.rect.y)
+            if map1.rect.y < -100:
+                map2.rect.y = map1.rect.y-1200
+            if map2.rect.y < -100:
+                map1.rect.y = map2.rect.y-1200
+                
 
             all_sprites_list.update()
 
@@ -124,18 +153,29 @@ def car_racing():
             '''
             
             # load backgroud grass texture
-            screen.blit(pygame.image.load("assets/grass.png"), [0,0, SCREENWIDTH,SCREENHEIGHT])
+            # screen.blit(pygame.image.load("assets/grass.png"), [0,0, SCREENWIDTH,SCREENHEIGHT])
             # load road
-            screen.blit(pygame.image.load("assets/road.png"), [0,0, SCREENWIDTH,SCREENHEIGHT])
+            # screen.blit(pygame.image.load("assets/road.png"), [0,0, SCREENWIDTH,SCREENHEIGHT])
 
 
             #Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
             all_sprites_list.draw(screen)
+            
+            if(car_crash):
+                screen.blit(pygame.image.load('assets/game_over.png'), [0, 0, SCREENWIDTH, SCREENHEIGHT])
+                
 
             #Refresh Screen
             pygame.display.flip()
+            
+            if(car_crash):
+                pygame.time.delay(2000)
+                # End Of Game
+                carryOn = False
+                # Now it will return to interface menu
+                # set the window back to interface size
+                res = (720, 720)
+                screen = pygame.display.set_mode(res)
 
             #Number of frames per secong e.g. 60
             clock.tick(60)
-
-    pygame.quit()
