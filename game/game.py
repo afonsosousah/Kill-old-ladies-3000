@@ -102,14 +102,16 @@ def car_racing():
 
             keys = pygame.key.get_pressed()
             if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-                playerCar.moveLeft(8)
+                if playerCar.rect.x - 8 > 160:
+                    playerCar.moveLeft(8)
             if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-                playerCar.moveRight(8)
+                if playerCar.rect.x + 8 < 590:
+                    playerCar.moveRight(8)
             if keys[pygame.K_UP] or keys[pygame.K_w]:
-                if speed + 0.05 < 3:
+                if speed + 0.05 < 3: # setting max speed
                     speed += 0.05
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                if speed - 0.05 > 0.5:
+                if speed - 0.05 > 0.5: # setting min speed
                     speed -= 0.05
 
 
@@ -130,11 +132,11 @@ def car_racing():
             
             # Infinite scrolling map
 
-            if map2.rect.y > -500 and map2.rect.y < -100:
-                map1.rect.y = map2.speed + map2.rect.y - 1200
+            if map2.rect.y > -400 and map2.rect.y < -100:
+                map1.rect.y = 100 + map2.rect.y - 1200
 
-            if map1.rect.y > -500 and map1.rect.y < -100:
-                map2.rect.y = map1.rect.y - 1200
+            if map1.rect.y > -400 and map1.rect.y < -100:
+                map2.rect.y = 100 + map1.rect.y - 1200
                 
             map1.moveDown(speed)
             map2.moveDown(speed)
