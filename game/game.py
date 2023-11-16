@@ -59,7 +59,8 @@ def car_racing():
     # Game background
     map1 = Map(SCREENWIDTH, SCREENHEIGHT*2, 25)
     map2 = Map(SCREENWIDTH, SCREENHEIGHT*2, 25)
-    map1.rect.y = 600  # put the second map above the first
+    # put the second map above the first
+    map1.rect.y = 600
     map2.rect.y = -600
     
     # Add maps to list of objects
@@ -128,13 +129,15 @@ def car_racing():
             
             
             # Infinite scrolling map
+
+            if map2.rect.y > -500 and map2.rect.y < -100:
+                map1.rect.y = map2.speed + map2.rect.y - 1200
+
+            if map1.rect.y > -500 and map1.rect.y < -100:
+                map2.rect.y = map1.rect.y - 1200
+                
             map1.moveDown(speed)
             map2.moveDown(speed)
-            print(map1.rect.y)
-            if map1.rect.y < -100:
-                map2.rect.y = map1.rect.y-1200
-            if map2.rect.y < -100:
-                map1.rect.y = map2.rect.y-1200
                 
 
             all_sprites_list.update()
