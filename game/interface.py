@@ -2,6 +2,7 @@ import pygame
 import pygame.gfxdraw
 import sys
 from game import car_racing
+from car_selector import car_selector
 
 
 # Creating a function that creates the GUI
@@ -62,7 +63,7 @@ def interface():
             # pressing the singleplayer button
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if 210 <= mouse[0] <= 510 and 240 <= mouse[1] <= 300:
-                    car_racing()
+                    car_selector()
         # setting the background color as black
         screen.fill(black)
         

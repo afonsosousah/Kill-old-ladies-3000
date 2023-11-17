@@ -1,4 +1,5 @@
 from interface import *
+global selected_car
 
 def main():
     interface()

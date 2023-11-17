@@ -2,6 +2,8 @@ import pygame, random
 # Let's import the Car class and the Map class
 from car import Car
 from map import Map
+import main
+import interface
 
 def car_racing():
     pygame.init()
@@ -31,7 +33,7 @@ def car_racing():
     all_sprites_list = pygame.sprite.Group()
 
 
-    playerCar = Car(RED, 60, 80, 70, random.randint(1,6), False)
+    playerCar = Car(RED, 60, 80, 70, main.selected_car, False)
     playerCar.rect.x = SCREENWIDTH/2 - 60/2
     playerCar.rect.y = SCREENHEIGHT - 110
 
@@ -177,10 +179,7 @@ def car_racing():
                 pygame.time.delay(2000)
                 # End Of Game
                 carryOn = False
-                # Now it will return to interface menu
-                # set the window back to interface size
-                res = (720, 720)
-                screen = pygame.display.set_mode(res)
+                interface.interface()
 
             #Number of frames per secong e.g. 60
             clock.tick(60)
