@@ -13,7 +13,7 @@ def car_racing():
     WHITE = (255, 255, 255)
     RED = (255, 0, 0)
     PURPLE = (255, 0, 255)
-    YELLOW = (255, 255, 0)
+    YELLOW = (253, 199, 79)
     CYAN = (0, 255, 255)
     BLUE = (100, 100, 255)
 
@@ -28,6 +28,11 @@ def car_racing():
     size = (SCREENWIDTH, SCREENHEIGHT)
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Turbo Racing 3000")
+
+    # creating buttons text labels
+    corbelfont = pygame.font.SysFont('Corbel', 40, bold=True, italic=True)
+    play_text = corbelfont.render('Play', True, WHITE)
+    back_text = corbelfont.render('Back', True, WHITE)
 
     #This will be a list that will contain all the sprites we intend to use in our game.
     all_sprites_list = pygame.sprite.Group()
@@ -101,18 +106,29 @@ def car_racing():
                 elif event.type==pygame.KEYDOWN:
                     if event.key==pygame.K_x:
                          playerCar.moveRight(10)
+                # press the back button
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    print(mouse[0])
+                    print(mouse[1])
+                    if 150 <= mouse[0] <= 300 and 500 <= mouse[1] <= 560:
+                        carryOn = False
+                        interface.interface()
+                # pressing the play button
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if 400 <= mouse[0] <= 550 and 500 <= mouse[1] <= 560:
+                        car_racing()
 
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and not car_crash:
                 if playerCar.rect.x - 8 > 160:
                     playerCar.moveLeft(8)
-            if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and not car_crash:
                 if playerCar.rect.x + 8 < 590:
                     playerCar.moveRight(8)
-            if keys[pygame.K_UP] or keys[pygame.K_w]:
+            if (keys[pygame.K_UP] or keys[pygame.K_w]) and not car_crash:
                 if speed + 0.05 < 3: # setting max speed
                     speed += 0.05
-            if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not car_crash:
                 if speed - 0.05 > 0.5: # setting min speed
                     speed -= 0.05
 
@@ -169,17 +185,28 @@ def car_racing():
             all_sprites_list.draw(screen)
             
             if(car_crash):
+                speed = 0
                 screen.blit(pygame.image.load('assets/game_over.png'), [0, 0, SCREENWIDTH, SCREENHEIGHT])
+                # play text
+                mouse = pygame.mouse.get_pos()
+                # when the mouse is on the box it changes color
+                if 400 <= mouse[0] <= 550 and 560 <= mouse[1] <= 620:
+                    interface.drawRhomboid(screen, YELLOW, YELLOW, 400, 500, 150, 60, 30, 5)
+                else:
+                    interface.drawRhomboid(screen, YELLOW, WHITE, 400, 500, 150, 60, 30, 5)
+                screen.blit(play_text, (400 + (150 - play_text.get_width())/2, 500 + 10))
+                
+                # quit text
+                if 150 <= mouse[0] <= 300 and 560 <= mouse[1] <= 620:
+                    interface.drawRhomboid(screen, RED, RED, 150, 500, 150, 60, 30, 5)
+                else:
+                    interface.drawRhomboid(screen, RED, WHITE, 150, 500, 150, 60, 30, 5)
+                screen.blit(back_text, (150 + (150 - back_text.get_width())/2, 500 + 10))
                 
 
             #Refresh Screen
             pygame.display.flip()
-            
-            if(car_crash):
-                pygame.time.delay(2000)
-                # End Of Game
-                carryOn = False
-                interface.interface()
+                       
 
             #Number of frames per secong e.g. 60
             clock.tick(60)
