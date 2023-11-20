@@ -21,13 +21,17 @@ def car_racing():
     colorList = (RED, GREEN, PURPLE, YELLOW, CYAN, BLUE)
     car_crash = False
 
-
     SCREENWIDTH=800
     SCREENHEIGHT=600
 
     size = (SCREENWIDTH, SCREENHEIGHT)
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Turbo Racing 3000")
+
+    # creating map
+    MAP = pygame.image.load("assets/infinite_level.png").convert_alpha()
+    MAP_BORDER = pygame.image.load("assets/map_border.png")
+    MAP_BORDER_MASK = pygame.mask.from_surface(MAP_BORDER)
 
     # creating buttons text labels
     corbelfont = pygame.font.SysFont('Corbel', 40, bold=True, italic=True)
@@ -118,13 +122,14 @@ def car_racing():
                     if 400 <= mouse[0] <= 550 and 500 <= mouse[1] <= 560:
                         car_racing()
 
+            if playerCar.collide(MAP_BORDER_MASK) != None:
+                playerCar.bounce()
+
             keys = pygame.key.get_pressed()
             if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and not car_crash:
-                if playerCar.rect.x - 8 > 160:
-                    playerCar.moveLeft(8)
+                playerCar.moveLeft(8)
             if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and not car_crash:
-                if playerCar.rect.x + 8 < 590:
-                    playerCar.moveRight(8)
+                playerCar.moveRight(8)
             if (keys[pygame.K_UP] or keys[pygame.K_w]) and not car_crash:
                 if speed + 0.05 < 3: # setting max speed
                     speed += 0.05

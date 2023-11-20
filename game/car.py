@@ -55,3 +55,20 @@ class Car(pygame.sprite.Sprite):
         self.image = pygame.image.load(f"assets/car{random.randint(1,6)}.png").convert_alpha()
         if self.flip:
             self.image = pygame.transform.flip(self.image, True, True)
+
+    def collide(self, mask, x=0, y=0):
+        car_mask = pygame.mask.from_surface(self.image)
+        offset = (int(self.rect.x - x), int(self.rect.y - y))
+        poi = mask.overlap(car_mask, offset)
+        return poi
+    
+    def bounce(self):
+        self.speed -= 0.05
+        if self.rect.x < 800/2:
+            # car hit the left border
+            self.moveRight(20)
+        else:
+            # car hit the right border
+            self.moveLeft(20) 
+
+
