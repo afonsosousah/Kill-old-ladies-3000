@@ -3,6 +3,7 @@ import pygame, random
 from car import Car
 import main
 import interface
+import math
 
 def car_racing():
     pygame.init()
@@ -97,14 +98,12 @@ def car_racing():
                          playerCar.moveRight(10)
                 # Press the back button
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    print(mouse[0])
-                    print(mouse[1])
-                    if 150 <= mouse[0] <= 300 and 500 <= mouse[1] <= 560:
+                    if 195 <= mouse[0] <= 345 and 500 <= mouse[1] <= 560:
                         carryOn = False
                         interface.interface()
                 # Pressing the play button
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if 400 <= mouse[0] <= 550 and 500 <= mouse[1] <= 560:
+                    if 445 <= mouse[0] <= 595 and 500 <= mouse[1] <= 560:
                         car_racing()
                         
             # Infinite scrolling map
@@ -115,8 +114,8 @@ def car_racing():
             if mapY1 > -300:
                 mapY0 = mapY1 - 1200
             # move the map 
-            mapY0 += speed * 1.5
-            mapY1 += speed * 1.5
+            mapY0 += speed * 2
+            mapY1 += speed * 2
 
             # Not letting the car go off the road
             if playerCar.collide(MAP_BORDER_MASK) != None:
@@ -174,18 +173,18 @@ def car_racing():
                 # play text
                 mouse = pygame.mouse.get_pos()
                 # when the mouse is on the box it changes color
-                if 400 <= mouse[0] <= 550 and 560 <= mouse[1] <= 620:
-                    interface.drawRhomboid(screen, YELLOW, YELLOW, 400, 500, 150, 60, 30, 5)
+                if 445 <= mouse[0] <= 595 and 500 <= mouse[1] <= 560:
+                    interface.drawRhomboid(screen, YELLOW, WHITE, 445, 500, 150, 60, 30, 5)
                 else:
-                    interface.drawRhomboid(screen, YELLOW, WHITE, 400, 500, 150, 60, 30, 5)
-                screen.blit(play_text, (400 + (150 - play_text.get_width())/2, 500 + 10))
+                    interface.drawRhomboid(screen, YELLOW, YELLOW, 445, 500, 150, 60, 30, 5)
+                screen.blit(play_text, (445 + 12.5 + (150 - play_text.get_width())/2, 500 + 12.5))
                 
                 # quit text
-                if 150 <= mouse[0] <= 300 and 560 <= mouse[1] <= 620:
-                    interface.drawRhomboid(screen, RED, RED, 150, 500, 150, 60, 30, 5)
+                if 195 <= mouse[0] <= 345 and 500 <= mouse[1] <= 560:
+                    interface.drawRhomboid(screen, RED, WHITE, 195, 500, 150, 60, 30, 5)
                 else:
-                    interface.drawRhomboid(screen, RED, WHITE, 150, 500, 150, 60, 30, 5)
-                screen.blit(back_text, (150 + (150 - back_text.get_width())/2, 500 + 10))
+                    interface.drawRhomboid(screen, RED, RED, 195, 500, 150, 60, 30, 5)
+                screen.blit(back_text, (195 + 12.5 + (150 - back_text.get_width())/2, 500 + 12.5))
                 
 
             #Refresh Screen

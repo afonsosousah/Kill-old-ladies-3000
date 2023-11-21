@@ -89,17 +89,17 @@ def car_selector():
         mouse = pygame.mouse.get_pos()
         # when the mouse is on the box it changes color
         if 400 <= mouse[0] <= 550 and 560 <= mouse[1] <= 620:
-            interface.drawRhomboid(screen, yellow, yellow, 400, 560, 150, 60, 30, 5)
-        else:
             interface.drawRhomboid(screen, yellow, white, 400, 560, 150, 60, 30, 5)
-        screen.blit(play_text, (400 + (150 - play_text.get_width())/2, 560 + 10))
+        else:
+            interface.drawRhomboid(screen, yellow, yellow, 400, 560, 150, 60, 30, 5)
+        screen.blit(play_text, (400 + 12.5 + (150 - play_text.get_width())/2, 560 + 12.5)) # +12.5 in the width and height because of the rhomboid offset and border
         
         # quit text
         if 150 <= mouse[0] <= 300 and 560 <= mouse[1] <= 620:
-            interface.drawRhomboid(screen, red, red, 150, 560, 150, 60, 30, 5)
-        else:
             interface.drawRhomboid(screen, red, white, 150, 560, 150, 60, 30, 5)
-        screen.blit(back_text, (150 + (150 - back_text.get_width())/2, 560 + 10))
+        else:
+            interface.drawRhomboid(screen, red, red, 150, 560, 150, 60, 30, 5)
+        screen.blit(back_text, (150 + 12.5 + (150 - back_text.get_width())/2, 560 + 12.5)) 
         
         # draw the car
         car_image = pygame.image.load(f'assets/car{main.selected_car}.png')

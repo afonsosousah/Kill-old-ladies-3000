@@ -72,38 +72,38 @@ def interface():
         mouse = pygame.mouse.get_pos()
         # when the mouse is on the box it changes color
         if 210 <= mouse[0] <= 510 and 240 <= mouse[1] <= 300:
-            drawRhomboid(screen, yellow, yellow, 195, 240, 300, 60, 30, 5)
-        else:
             drawRhomboid(screen, yellow, white, 195, 240, 300, 60, 30, 5)
+        else:
+            drawRhomboid(screen, yellow, yellow, 195, 240, 300, 60, 30, 5)
         screen.blit(game1_text, (210 + (300 - game1_text.get_width())/2, 240 + 10))
         
         # SAME FOR ALL THE OTHER BUTTONS
         # game 2 text
         if 210 <= mouse[0] <= 210 + 300 and 320 <= mouse[1] <= 320 + 60:
-            drawRhomboid(screen, yellow, yellow, 195, 320, 300, 60, 30, 5)
-        else:
             drawRhomboid(screen, yellow, white, 195, 320, 300, 60, 30, 5)
+        else:
+            drawRhomboid(screen, yellow, yellow, 195, 320, 300, 60, 30, 5)
         screen.blit(game2_text, (210 + (300 - game2_text.get_width())/2, 320 + 10))
         
         # game 3 text
         if 210 <= mouse[0] <= 210 + 300 and 400 <= mouse[1] <= 400 + 60:
-            drawRhomboid(screen, yellow, yellow, 195, 400, 300, 60, 30, 5)
-        else:
             drawRhomboid(screen, yellow, white, 195, 400, 300, 60, 30, 5)
+        else:
+            drawRhomboid(screen, yellow, yellow, 195, 400, 300, 60, 30, 5)
         screen.blit(game3_text, (210 + (300 - game3_text.get_width())/2, 400 + 10))
         
         # credits text
         if 210 <= mouse[0] <= 210 + 300 and 480 <= mouse[1] <= 480 + 60:
-            drawRhomboid(screen, green, green, 195, 480, 300, 60, 30, 5)
-        else:
             drawRhomboid(screen, green, white, 195, 480, 300, 60, 30, 5)
+        else:
+            drawRhomboid(screen, green, green, 195, 480, 300, 60, 30, 5)
         screen.blit(credits_text, (210 + (300 - credits_text.get_width())/2, 480 + 10))
         
         # quit text
         if 210 <= mouse[0] <= 210 + 300 and 560 <= mouse[1] <= 560 + 60:
-            drawRhomboid(screen, red, red, 195, 560, 300, 60, 30, 5)
-        else:
             drawRhomboid(screen, red, white, 195, 560, 300, 60, 30, 5)
+        else:
+            drawRhomboid(screen, red, red, 195, 560, 300, 60, 30, 5)
         screen.blit(quit_text, (210 + (300 - quit_text.get_width())/2, 560 + 10))
         
         # TITLE TEXT
