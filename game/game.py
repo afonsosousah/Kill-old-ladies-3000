@@ -110,18 +110,19 @@ def car_racing():
                 elif event.type==pygame.KEYDOWN:
                     if event.key==pygame.K_x:
                          playerCar.moveRight(10)
-                # press the back button
+                # Press the back button
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     print(mouse[0])
                     print(mouse[1])
                     if 150 <= mouse[0] <= 300 and 500 <= mouse[1] <= 560:
                         carryOn = False
                         interface.interface()
-                # pressing the play button
+                # Pressing the play button
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if 400 <= mouse[0] <= 550 and 500 <= mouse[1] <= 560:
                         car_racing()
 
+            # Not letting the car go off the road
             if playerCar.collide(MAP_BORDER_MASK) != None:
                 playerCar.bounce()
 
@@ -138,6 +139,19 @@ def car_racing():
                     speed -= 0.05
 
 
+            # Pixel perfect collision betwee cars
+            player_car_mask = playerCar.create_mask()
+
+            for car in all_coming_cars:
+                coming_cars_masks = car.create_mask()
+                offset = (int(car.rect.x - playerCar.rect.x), int(car.rect.y - playerCar.rect.y))
+
+                collision_point = player_car_mask.overlap(coming_cars_masks, offset)
+
+                if collision_point:
+                    print("Collision!")
+
+
             # Game Logic
             for car in all_coming_cars:
                 car.moveForward(speed)
@@ -151,8 +165,8 @@ def car_racing():
                 for car in car_collision_list:
                     print("Car crash!")
                     car_crash = True
-            
-            
+          
+                      
             # Infinite scrolling map
 
             if map2.rect.y > -400 and map2.rect.y < -100:

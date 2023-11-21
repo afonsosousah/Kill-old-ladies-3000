@@ -71,4 +71,7 @@ class Car(pygame.sprite.Sprite):
             # car hit the right border
             self.moveLeft(20) 
 
+    def create_mask(self):
+        return pygame.mask.from_surface(self.image)
+
 
