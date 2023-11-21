@@ -1,7 +1,6 @@
 import pygame, random
 # Let's import the Car class and the Map class
 from car import Car
-from map import Map
 import main
 import interface
 
@@ -29,9 +28,12 @@ def car_racing():
     pygame.display.set_caption("Turbo Racing 3000")
 
     # creating map
+    # Game background
     MAP = pygame.image.load("assets/infinite_level.png").convert_alpha()
     MAP_BORDER = pygame.image.load("assets/map_border.png")
     MAP_BORDER_MASK = pygame.mask.from_surface(MAP_BORDER)
+    mapY0 = 0
+    mapY1 = -1200
 
     # creating buttons text labels
     corbelfont = pygame.font.SysFont('Corbel', 40, bold=True, italic=True)
@@ -65,23 +67,6 @@ def car_racing():
     car5 = Car(GREY, 60, 80, random.randint(50,100), random.randint(1,6))
     car5.rect.x = 675
     car5.rect.y = -400
-
-
-    # Game background
-    map1 = Map(SCREENWIDTH, SCREENHEIGHT*2, 25)
-    map2 = Map(SCREENWIDTH, SCREENHEIGHT*2, 25)
-    # put the second map above the first
-    map1.rect.y = 600
-    map2.rect.y = -600
-    
-    # Add maps to list of objects
-    all_sprites_list.add(map1)
-    all_sprites_list.add(map2)
-    
-    maps_group = pygame.sprite.Group()
-    maps_group.add(map1)
-    maps_group.add(map2)
-
 
     # Add the car to the list of objects
     all_sprites_list.add(playerCar)
@@ -121,6 +106,17 @@ def car_racing():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if 400 <= mouse[0] <= 550 and 500 <= mouse[1] <= 560:
                         car_racing()
+                        
+            # Infinite scrolling map
+            screen.blit(MAP, [0, mapY0, SCREENWIDTH, SCREENHEIGHT*2])
+            screen.blit(MAP, [0, mapY1, SCREENWIDTH, SCREENHEIGHT*2])
+            if mapY0 > -300:
+                mapY1 = mapY0 - 1200
+            if mapY1 > -300:
+                mapY0 = mapY1 - 1200
+            # move the map 
+            mapY0 += speed * 1.5
+            mapY1 += speed * 1.5
 
             # Not letting the car go off the road
             if playerCar.collide(MAP_BORDER_MASK) != None:
@@ -165,44 +161,13 @@ def car_racing():
                 for car in car_collision_list:
                     print("Car crash!")
                     car_crash = True
-          
-                      
-            # Infinite scrolling map
-
-            if map2.rect.y > -400 and map2.rect.y < -100:
-                map1.rect.y = 100 + map2.rect.y - 1200
-
-            if map1.rect.y > -400 and map1.rect.y < -100:
-                map2.rect.y = 100 + map1.rect.y - 1200
-                
-            map1.moveDown(speed)
-            map2.moveDown(speed)
-                
-
+            
             all_sprites_list.update()
 
-            '''
-            #Drawing on Screen
-            screen.fill(GREEN)
-            #Draw The Road
-            pygame.draw.rect(screen, GREY, [40,0, 400,SCREENHEIGHT])
-            #Draw Line painting on the road
-            pygame.draw.line(screen, WHITE, [140,0],[140,SCREENHEIGHT],5)
-            #Draw Line painting on the road
-            pygame.draw.line(screen, WHITE, [240,0],[240,SCREENHEIGHT],5)
-            #Draw Line painting on the road
-            pygame.draw.line(screen, WHITE, [340,0],[340,SCREENHEIGHT],5)
-            '''
-            
-            # load backgroud grass texture
-            # screen.blit(pygame.image.load("assets/grass.png"), [0,0, SCREENWIDTH,SCREENHEIGHT])
-            # load road
-            # screen.blit(pygame.image.load("assets/road.png"), [0,0, SCREENWIDTH,SCREENHEIGHT])
-
-
-            #Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
+            # Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
             all_sprites_list.draw(screen)
             
+            # Game over menu
             if(car_crash):
                 speed = 0
                 screen.blit(pygame.image.load('assets/game_over.png'), [0, 0, SCREENWIDTH, SCREENHEIGHT])

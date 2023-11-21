@@ -1,7 +1,6 @@
 import pygame
 import pygame.gfxdraw
 import sys
-from game import car_racing
 from car_selector import car_selector
 
 
