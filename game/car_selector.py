@@ -56,8 +56,6 @@ def car_selector():
                 pygame.quit()
             # press the back button
             if ev.type == pygame.MOUSEBUTTONDOWN:
-                print(mouse[0])
-                print(mouse[1])
                 if 150 <= mouse[0] <= 300 and 560 <= mouse[1] <= 620:
                     interface.interface()
             # pressing the play button

@@ -1,6 +1,7 @@
 import pygame, random
 # Let's import the Car class and the Map class
 from car import Car
+from power_up import Power_Up
 import main
 import interface
 import math
@@ -19,6 +20,8 @@ def car_racing():
 
     speed = 1
     colorList = (RED, GREEN, PURPLE, YELLOW, CYAN, BLUE)
+    carSpawnLocationsX = (195, 315, 435, 555) # spawn in each lane of the map
+    powerUpSpawnLocationsX = (250, 390, 500)  # spawn in the middle of the lanes
     car_crash = False
 
     SCREENWIDTH=800
@@ -50,24 +53,21 @@ def car_racing():
     playerCar.rect.y = SCREENHEIGHT - 110
 
     car1 = Car(PURPLE, 60, 80, random.randint(50,100), random.randint(1,6))
-    car1.rect.x = 195
+    car1.rect.x = carSpawnLocationsX[0]
     car1.rect.y = -100
 
     car2 = Car(YELLOW, 60, 80, random.randint(50,100), random.randint(1,6))
-    car2.rect.x = 315
+    car2.rect.x = carSpawnLocationsX[1]
     car2.rect.y = -600
 
     car3 = Car(CYAN, 60, 80, random.randint(50,100), random.randint(1,6))
-    car3.rect.x = 435
+    car3.rect.x = carSpawnLocationsX[2]
     car3.rect.y = -300
 
     car4 = Car(BLUE, 60, 80, random.randint(50,100), random.randint(1,6))
-    car4.rect.x = 555
+    car4.rect.x = carSpawnLocationsX[3]
     car4.rect.y = -1000
     
-    car5 = Car(GREY, 60, 80, random.randint(50,100), random.randint(1,6))
-    car5.rect.x = 675
-    car5.rect.y = -400
 
     # Add the car to the list of objects
     all_sprites_list.add(playerCar)
@@ -76,11 +76,24 @@ def car_racing():
     all_sprites_list.add(car3)
     all_sprites_list.add(car4)
 
+    # Create a list of the enemy cars
     all_coming_cars = pygame.sprite.Group()
     all_coming_cars.add(car1)
     all_coming_cars.add(car2)
     all_coming_cars.add(car3)
     all_coming_cars.add(car4)
+    
+    
+    
+    # Creating the Power Ups
+    powerUp1 = Power_Up("Test", GREEN, random.randint(50,100))
+    powerUp1.rect.x = random.choice(powerUpSpawnLocationsX)
+    powerUp1.rect.y = -300
+    
+    # Create a list of all Power Ups
+    all_power_ups = pygame.sprite.Group()
+    all_power_ups.add(powerUp1)
+    all_sprites_list.add(powerUp1)
 
 
     # Allowing the user to close the window...
@@ -134,7 +147,7 @@ def car_racing():
                     speed -= 0.05
 
 
-            # Pixel perfect collision betwee cars
+            # Pixel perfect collision between cars
             player_car_mask = playerCar.create_mask()
 
             for car in all_coming_cars:
@@ -153,13 +166,24 @@ def car_racing():
                 if car.rect.y > SCREENHEIGHT:
                     car.changeSpeed(random.randint(50,100))
                     car.repaint(random.choice(colorList))
-                    car.rect.y = -200
+                    car.rect.y = random.randint(-1000, -100)
 
                 # Check if there is a car collision
                 car_collision_list = pygame.sprite.spritecollide(playerCar, all_coming_cars, False)
                 for car in car_collision_list:
                     print("Car crash!")
                     car_crash = True
+            
+            # Power Ups
+            for powerUp in all_power_ups:
+                powerUp.moveForward(speed)
+                if powerUp.rect.y > 3*SCREENHEIGHT:  # we are multiplying by 3 to spawn 3 times less powerups than cars
+                    powerUp.changeSpeed(random.randint(50, 70))
+                    powerUp.repaint(random.choice(colorList))
+                    powerUp.rect.y = random.randint(-1000, -100)
+                    powerUp.rect.x = random.choice(powerUpSpawnLocationsX)  # move to any of the spawn locations
+            
+            
             
             all_sprites_list.update()
 
