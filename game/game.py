@@ -37,6 +37,11 @@ def car_racing():
     mapY0 = 0
     mapY1 = -1200
 
+    # Creating the score
+    score_value = 0
+    score_font = pygame.font.SysFont('Corbel', 25, bold = True)
+    score_text = score_font.render("Score: " + str(score_value), True, (255, 255, 255))
+
     # creating buttons text labels
     corbelfont = pygame.font.SysFont('Corbel', 40, bold=True, italic=True)
     play_text = corbelfont.render('Play', True, WHITE)
@@ -124,7 +129,7 @@ def car_racing():
                 # Pressing the play button
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if 445 <= mouse[0] <= 595 and 500 <= mouse[1] <= 560:
-                        car_racing()
+                        car_racing()               
             
 
             # Infinite scrolling map
@@ -137,6 +142,10 @@ def car_racing():
             # move the map 
             mapY0 += main.speed * 2
             mapY1 += main.speed * 2
+
+            # Drawing the score
+            score_text = score_font.render("Score: " + str(score_value), True, (255, 255, 255))
+            screen.blit(score_text, (10, 10))
 
             # Not letting the car go off the road
             if playerCar.collide(MAP_BORDER_MASK) != None:
@@ -184,6 +193,7 @@ def car_racing():
                     car.changeSpeed(random.randint(50,100))
                     car.repaint(random.choice(colorList))
                     car.rect.y = random.randint(-1000, -100)
+                    score_value += 1
 
                 '''# Check if there is a car collision
                 car_collision_list = pygame.sprite.spritecollide(playerCar, all_coming_cars, False)
