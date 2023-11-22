@@ -20,8 +20,6 @@ def car_racing():
 
     speed = 1
     colorList = (RED, GREEN, PURPLE, YELLOW, CYAN, BLUE)
-    carSpawnLocationsX = (195, 315, 435, 555) # spawn in each lane of the map
-    powerUpSpawnLocationsX = (250, 390, 500)  # spawn in the middle of the lanes
     car_crash = False
 
     SCREENWIDTH=800
@@ -46,7 +44,9 @@ def car_racing():
 
     #This will be a list that will contain all the sprites we intend to use in our game.
     all_sprites_list = pygame.sprite.Group()
-
+    
+    # Define where the cars spawn
+    carSpawnLocationsX = (195, 315, 435, 555) # spawn in each lane of the map
 
     playerCar = Car(RED, 60, 80, 70, main.selected_car, False)
     playerCar.rect.x = SCREENWIDTH/2 - 60/2
@@ -85,8 +85,14 @@ def car_racing():
     
     
     
+    # Define where the power ups spawn
+    powerUpSpawnLocationsX = (250, 390, 500)  # spawn in the middle of the lanes
+    
+    # Define what are the available types of power ups
+    powerUpTypes = ("invincibility", "slowing")
+    
     # Creating the Power Ups
-    powerUp1 = Power_Up("Test", GREEN, random.randint(50,100))
+    powerUp1 = Power_Up(random.choice(powerUpTypes), random.randint(50,100))
     powerUp1.rect.x = random.choice(powerUpSpawnLocationsX)
     powerUp1.rect.y = -300
     
@@ -179,7 +185,7 @@ def car_racing():
                 powerUp.moveForward(speed)
                 if powerUp.rect.y > 3*SCREENHEIGHT:  # we are multiplying by 3 to spawn 3 times less powerups than cars
                     powerUp.changeSpeed(random.randint(50, 70))
-                    powerUp.repaint(random.choice(colorList))
+                    powerUp.repaint(random.choice(powerUpTypes))
                     powerUp.rect.y = random.randint(-1000, -100)
                     powerUp.rect.x = random.choice(powerUpSpawnLocationsX)  # move to any of the spawn locations
             
