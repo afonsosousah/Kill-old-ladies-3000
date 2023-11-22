@@ -99,7 +99,8 @@ def car_racing():
     # Allowing the user to close the window...
     carryOn = True
     clock=pygame.time.Clock()
-    
+    wait_for_key = True
+
 
     while carryOn:
             for event in pygame.event.get():
@@ -118,7 +119,8 @@ def car_racing():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if 445 <= mouse[0] <= 595 and 500 <= mouse[1] <= 560:
                         car_racing()
-                        
+            
+
             # Infinite scrolling map
             screen.blit(MAP, [0, mapY0, SCREENWIDTH, SCREENHEIGHT*2])
             screen.blit(MAP, [0, mapY1, SCREENWIDTH, SCREENHEIGHT*2])
@@ -189,6 +191,15 @@ def car_racing():
 
             # Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
             all_sprites_list.draw(screen)
+
+            # Press any key to start menu
+            if(wait_for_key):
+                speed = 0
+                screen.blit(pygame.image.load('assets/press_any_key.png'), [0, 0, SCREENWIDTH, SCREENHEIGHT])
+                for event in pygame.event.get():
+                    if event.type==pygame.KEYDOWN:
+                        wait_for_key = False
+                        speed = 1
             
             # Game over menu
             if(car_crash):
