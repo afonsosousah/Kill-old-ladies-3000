@@ -1,4 +1,6 @@
 import pygame
+import main
+
 WHITE = (255, 255, 255)
 
 powerUpKeys = {}
@@ -38,18 +40,21 @@ class Power_Up(pygame.sprite.Sprite):
     def affectPlayer(self, player):
         if self.type == "invincibility":
             # To be defined
-            pass
+            player.bounce()
         elif self.type == "slowing":
-            player.speed = 10  
+            main.speed = 0.2
 
     def moveForward(self, speed):
-        self.rect.y += self.speed * speed / 20
+        self.rect.y += speed * 2
 
     def moveBackward(self, speed):
-        self.rect.y -= self.speed * speed / 20
+        self.rect.y -= speed * 2
 
     def changeSpeed(self, speed):
         self.speed = speed
 
     def repaint(self, type):
         self.image = pygame.image.load(f'assets/powerup_{type}.png')
+    
+    def create_mask(self):
+        return pygame.mask.from_surface(self.image)

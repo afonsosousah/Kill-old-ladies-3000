@@ -18,7 +18,7 @@ def car_racing():
     CYAN = (0, 255, 255)
     BLUE = (100, 100, 255)
 
-    speed = 1
+    main.speed = 1
     colorList = (RED, GREEN, PURPLE, YELLOW, CYAN, BLUE)
     car_crash = False
 
@@ -135,8 +135,8 @@ def car_racing():
             if mapY1 > -300:
                 mapY0 = mapY1 - 1200
             # move the map 
-            mapY0 += speed * 2
-            mapY1 += speed * 2
+            mapY0 += main.speed * 2
+            mapY1 += main.speed * 2
 
             # Not letting the car go off the road
             if playerCar.collide(MAP_BORDER_MASK) != None:
@@ -148,43 +148,52 @@ def car_racing():
             if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and not car_crash:
                 playerCar.moveRight(8)
             if (keys[pygame.K_UP] or keys[pygame.K_w]) and not car_crash:
-                if speed + 0.05 < 3: # setting max speed
-                    speed += 0.05
+                if main.speed + 0.05 < 3: # setting max main.speed
+                    main.speed += 0.05
             if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not car_crash:
-                if speed - 0.05 > 0.5: # setting min speed
-                    speed -= 0.05
+                if main.speed - 0.05 > 0.5: # setting min main.speed
+                    main.speed -= 0.05
 
 
-            # Pixel perfect collision between cars
+            # Pixel perfect collision between cars and powerups
             player_car_mask = playerCar.create_mask()
 
             for car in all_coming_cars:
                 coming_cars_masks = car.create_mask()
                 offset = (int(car.rect.x - playerCar.rect.x), int(car.rect.y - playerCar.rect.y))
-
                 collision_point = player_car_mask.overlap(coming_cars_masks, offset)
 
                 if collision_point:
-                    print("Collision!")
+                    car_crash = True
+                    #print("Collision!")
+            
+            for powerUp in all_power_ups:
+                powerUpMask = powerUp.create_mask()
+                offset = (int(powerUp.rect.x - playerCar.rect.x), int(powerUp.rect.y - playerCar.rect.y))
+                collision_point = player_car_mask.overlap(powerUpMask, offset)
+
+                if collision_point:
+                    print("Collision with powerup!")
+                    powerUp.affectPlayer(playerCar)
 
 
             # Game Logic
             for car in all_coming_cars:
-                car.moveForward(speed)
+                car.moveForward(main.speed)
                 if car.rect.y > SCREENHEIGHT:
                     car.changeSpeed(random.randint(50,100))
                     car.repaint(random.choice(colorList))
                     car.rect.y = random.randint(-1000, -100)
 
-                # Check if there is a car collision
+                '''# Check if there is a car collision
                 car_collision_list = pygame.sprite.spritecollide(playerCar, all_coming_cars, False)
                 for car in car_collision_list:
                     print("Car crash!")
-                    car_crash = True
+                    car_crash = True'''
             
             # Power Ups
             for powerUp in all_power_ups:
-                powerUp.moveForward(speed)
+                powerUp.moveForward(main.speed)
                 if powerUp.rect.y > 3*SCREENHEIGHT:  # we are multiplying by 3 to spawn 3 times less powerups than cars
                     powerUp.changeSpeed(random.randint(50, 70))
                     powerUp.repaint(random.choice(powerUpTypes))
@@ -198,18 +207,22 @@ def car_racing():
             # Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
             all_sprites_list.draw(screen)
 
-            # Press any key to start menu
+            # Wait for key press to start
             if(wait_for_key):
-                speed = 0
-                screen.blit(pygame.image.load('assets/press_any_key.png'), [0, 0, SCREENWIDTH, SCREENHEIGHT])
+                main.speed = 0
+                msToChange = 500  # We set the amount of milliseconds that each frame stays
+                if (pygame.time.get_ticks() // msToChange) % 2 == 0:
+                    screen.blit(pygame.image.load('assets/press_any_key.png'), [0, 0, SCREENWIDTH, SCREENHEIGHT])
+                else:
+                    screen.blit(pygame.image.load('assets/press_any_key_empty.png'), [0, 0, SCREENWIDTH, SCREENHEIGHT])
                 for event in pygame.event.get():
                     if event.type==pygame.KEYDOWN:
                         wait_for_key = False
-                        speed = 1
+                        main.speed = 1
             
             # Game over menu
             if(car_crash):
-                speed = 0
+                main.speed = 0
                 screen.blit(pygame.image.load('assets/game_over.png'), [0, 0, SCREENWIDTH, SCREENHEIGHT])
                 # play text
                 mouse = pygame.mouse.get_pos()
