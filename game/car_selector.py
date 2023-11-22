@@ -50,6 +50,7 @@ def car_selector():
     # interface loop
     while carryOn:
         # getting the input of the user
+        mouse = pygame.mouse.get_pos()
         for ev in pygame.event.get():
             # press on exit button
             if ev.type == pygame.QUIT:

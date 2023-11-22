@@ -49,9 +49,7 @@ class Car(pygame.sprite.Sprite):
     def changeSpeed(self, speed):
         self.speed = speed
 
-    def repaint(self, color):
-        self.color = color
-        #pygame.draw.rect(self.image, self.color, [0, 0, self.width, self.height])
+    def repaint(self):
         self.image = pygame.image.load(f"assets/car{random.randint(1,6)}.png").convert_alpha()
         if self.flip:
             self.image = pygame.transform.flip(self.image, True, True)

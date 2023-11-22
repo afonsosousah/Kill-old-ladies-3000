@@ -19,6 +19,7 @@ def car_racing():
     BLUE = (100, 100, 255)
 
     main.speed = 1
+    main.active_power_up = None
     colorList = (RED, GREEN, PURPLE, YELLOW, CYAN, BLUE)
     car_crash = False
 
@@ -94,7 +95,7 @@ def car_racing():
     powerUpSpawnLocationsX = (250, 390, 500)  # spawn in the middle of the lanes
     
     # Define what are the available types of power ups
-    powerUpTypes = ("invincibility", "slowing")
+    powerUpTypes = ("invincibility", "slowing", "repaint", "random")
     
     # Creating the Power Ups
     powerUp1 = Power_Up(random.choice(powerUpTypes), random.randint(50,100))
@@ -105,6 +106,7 @@ def car_racing():
     all_power_ups = pygame.sprite.Group()
     all_power_ups.add(powerUp1)
     all_sprites_list.add(powerUp1)
+
 
 
     # Allowing the user to close the window...
@@ -122,6 +124,7 @@ def car_racing():
                     if event.key==pygame.K_x:
                          playerCar.moveRight(10)
                 # Press the back button
+                mouse = pygame.mouse.get_pos()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if 195 <= mouse[0] <= 345 and 500 <= mouse[1] <= 560:
                         carryOn = False
@@ -157,10 +160,14 @@ def car_racing():
             if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and not car_crash:
                 playerCar.moveRight(8)
             if (keys[pygame.K_UP] or keys[pygame.K_w]) and not car_crash:
-                if main.speed + 0.05 < 3: # setting max main.speed
+                # setting max speed and not letting speed up if slowing power up
+                if main.speed + 0.05 < 2 \
+                    and not (main.active_power_up != None and main.active_power_up.typeWhenActivated == "slowing"):
                     main.speed += 0.05
             if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not car_crash:
-                if main.speed - 0.05 > 0.5: # setting min main.speed
+                # setting min speed and not letting speed down if slowing power up
+                if main.speed - 0.05 > 1 \
+                    and not(main.active_power_up != None and main.active_power_up.typeWhenActivated == "slowing"):
                     main.speed -= 0.05
 
 
@@ -184,6 +191,10 @@ def car_racing():
                 if collision_point:
                     print("Collision with powerup!")
                     powerUp.affectPlayer(playerCar)
+                    powerUp.changeSpeed(random.randint(50, 70))
+                    powerUp.repaint(random.choice(powerUpTypes))
+                    powerUp.rect.y = random.randint(-1000, -100)
+                    powerUp.rect.x = random.choice(powerUpSpawnLocationsX)  # move to any of the spawn locations
 
 
             # Game Logic
@@ -191,7 +202,7 @@ def car_racing():
                 car.moveForward(main.speed)
                 if car.rect.y > SCREENHEIGHT:
                     car.changeSpeed(random.randint(50,100))
-                    car.repaint(random.choice(colorList))
+                    car.repaint()
                     car.rect.y = random.randint(-1000, -100)
                     score_value += 1
 
@@ -209,6 +220,11 @@ def car_racing():
                     powerUp.repaint(random.choice(powerUpTypes))
                     powerUp.rect.y = random.randint(-1000, -100)
                     powerUp.rect.x = random.choice(powerUpSpawnLocationsX)  # move to any of the spawn locations
+            
+            # Check if there is any active power up to deactivate
+            if main.active_power_up != None:
+                if pygame.time.get_ticks() - main.active_power_up.startTime >= main.active_power_up.timeout:
+                    main.active_power_up.deactivate()
             
             
             
