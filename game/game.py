@@ -43,6 +43,11 @@ def car_racing():
     score_font = pygame.font.SysFont('Corbel', 25, bold = True)
     score_text = score_font.render("Score: " + str(score_value), True, (255, 255, 255))
 
+    # Creating the vel
+    vel_value = 0
+    vel_font = pygame.font.SysFont('Corbel', 25, bold = True)
+    vel_text = vel_font.render("Vel: " + str(vel_value) + "km/h", True, (255, 255, 255))
+
     # creating buttons text labels
     corbelfont = pygame.font.SysFont('Corbel', 40, bold=True, italic=True)
     play_text = corbelfont.render('Play', True, WHITE)
@@ -149,6 +154,10 @@ def car_racing():
             # Drawing the score
             score_text = score_font.render("Score: " + str(score_value), True, (255, 255, 255))
             screen.blit(score_text, (10, 10))
+
+            # Drawing the vel
+            vel_text = vel_font.render("Vel: " + str(playerCar.speed) + " km/h", True, (255, 255, 255))
+            screen.blit(vel_text, (10, 40))
 
             # Not letting the car go off the road
             if playerCar.collide(MAP_BORDER_MASK) != None:
