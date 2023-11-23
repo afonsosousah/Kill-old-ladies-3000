@@ -156,7 +156,7 @@ def car_racing():
             screen.blit(score_text, (10, 10))
 
             # Drawing the vel
-            vel_text = vel_font.render("Vel: " + str(playerCar.speed) + " km/h", True, (255, 255, 255))
+            vel_text = vel_font.render("Vel: " + str(math.floor(main.speed * 50)) + " km/h", True, (255, 255, 255))
             screen.blit(vel_text, (10, 40))
 
             # Not letting the car go off the road
@@ -170,12 +170,12 @@ def car_racing():
                 playerCar.moveRight(8)
             if (keys[pygame.K_UP] or keys[pygame.K_w]) and not car_crash:
                 # setting max speed and not letting speed up if slowing power up
-                if main.speed + 0.05 < 2 \
+                if main.speed + 0.05 < 2.5 \
                     and not (main.active_power_up != None and main.active_power_up.typeWhenActivated == "slowing"):
                     main.speed += 0.05
             if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not car_crash:
                 # setting min speed and not letting speed down if slowing power up
-                if main.speed - 0.05 > 1 \
+                if main.speed - 0.05 > 0.7 \
                     and not(main.active_power_up != None and main.active_power_up.typeWhenActivated == "slowing"):
                     main.speed -= 0.05
 
