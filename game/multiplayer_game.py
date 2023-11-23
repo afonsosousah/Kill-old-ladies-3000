@@ -6,7 +6,7 @@ import main
 import interface
 import math
 
-def car_racing():
+def multiplayer_racing():
     pygame.init()
 
     GREEN = (20, 255, 140)
@@ -52,11 +52,17 @@ def car_racing():
     all_sprites_list = pygame.sprite.Group()
     
     # Define where the enemies spawn
-    carSpawnLocationsX = (195, 315, 435, 555) # spawn in each lane of the map
+    carSpawnLocationsX = (195, 315, 435, 555) # spawn in each lane of the map 
 
-    playerCar = Car(RED, 60, 80, 70, main.selected_car, False)
-    playerCar.rect.x = SCREENWIDTH/2 - 60/2
-    playerCar.rect.y = SCREENHEIGHT - 110
+    playerCar1 = Car(RED, 60, 80, 70, main.selected_car, False)
+    playerCar1.rect.x = SCREENWIDTH/2 - 60/2
+    playerCar1.rect.y = SCREENHEIGHT - 110
+
+    playerCar2 = Car(BLUE, 60, 80, 70, main.selected_car, False)
+    playerCar2.rect.x = SCREENWIDTH/2 - 60/2
+    playerCar2.rect.y = SCREENHEIGHT - 100
+
+
 
     car1 = Car(PURPLE, 60, 80, random.randint(50,100), random.randint(1,6))
     car1.rect.x = carSpawnLocationsX[0]
@@ -75,8 +81,14 @@ def car_racing():
     car4.rect.y = -1000
     
 
-    # Add the car to the list of objects
-    all_sprites_list.add(playerCar)
+    # Add the cars to the list of objects
+    all_sprites_list.add(playerCar1)
+    all_sprites_list.add(car1)
+    all_sprites_list.add(car2)
+    all_sprites_list.add(car3)
+    all_sprites_list.add(car4)
+
+    all_sprites_list.add(playerCar2)
     all_sprites_list.add(car1)
     all_sprites_list.add(car2)
     all_sprites_list.add(car3)
@@ -122,7 +134,7 @@ def car_racing():
                     pygame.quit()
                 elif event.type==pygame.KEYDOWN:
                     if event.key==pygame.K_x:
-                         playerCar.moveRight(10)
+                         playerCar1.moveRight(10)
                 # Press the back button
                 mouse = pygame.mouse.get_pos()
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -132,7 +144,7 @@ def car_racing():
                 # Pressing the play button
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if 445 <= mouse[0] <= 595 and 500 <= mouse[1] <= 560:
-                        car_racing()               
+                        multiplayer_racing()               
             
 
             # Infinite scrolling map
@@ -151,33 +163,56 @@ def car_racing():
             screen.blit(score_text, (10, 10))
 
             # Not letting the car go off the road
-            if playerCar.collide(MAP_BORDER_MASK) != None:
-                playerCar.bounce()
+            if playerCar1.collide(MAP_BORDER_MASK) != None:
+                playerCar1.bounce()
+
+            if playerCar2.collide(MAP_BORDER_MASK) != None:
+                playerCar2.bounce()
 
             keys = pygame.key.get_pressed()
-            if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and not car_crash:
-                playerCar.moveLeft(8)
-            if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and not car_crash:
-                playerCar.moveRight(8)
-            if (keys[pygame.K_UP] or keys[pygame.K_w]) and not car_crash:
+            if keys[pygame.K_LEFT] and not car_crash:
+                playerCar1.moveLeft(8)
+            if keys[pygame.K_RIGHT] and not car_crash:
+                playerCar1.moveRight(8)
+            if keys[pygame.K_UP] and not car_crash:
                 # setting max speed and not letting speed up if slowing power up
                 if main.speed + 0.05 < 2 \
                     and not (main.active_power_up != None and main.active_power_up.typeWhenActivated == "slowing"):
                     main.speed += 0.05
-            if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not car_crash:
+            if keys[pygame.K_DOWN] and not car_crash:
                 # setting min speed and not letting speed down if slowing power up
                 if main.speed - 0.05 > 1 \
                     and not(main.active_power_up != None and main.active_power_up.typeWhenActivated == "slowing"):
                     main.speed -= 0.05
 
+            if keys[pygame.K_a] and not car_crash:
+                playerCar2.moveLeft(8)
+            if keys[pygame.K_d] and not car_crash:
+                playerCar2.moveRight(8)
+            if keys[pygame.K_w] and not car_crash:
+                # setting max speed and not letting speed up if slowing power up
+                if main.speed + 0.05 < 2 \
+                    and not (main.active_power_up != None and main.active_power_up.typeWhenActivated == "slowing"):
+                    main.speed += 0.05
+            if keys[pygame.K_s] and not car_crash:
+                # setting min speed and not letting speed down if slowing power up
+                if main.speed - 0.05 > 1 \
+                    and not(main.active_power_up != None and main.active_power_up.typeWhenActivated == "slowing"):
+                    main.speed -= 0.05
 
             # Pixel perfect collision between cars and powerups
-            player_car_mask = playerCar.create_mask()
+            player_car1_mask = playerCar1.create_mask()
+            player_car2_mask = playerCar2.create_mask()
 
             for car in all_coming_cars:
                 coming_cars_masks = car.create_mask()
-                offset = (int(car.rect.x - playerCar.rect.x), int(car.rect.y - playerCar.rect.y))
-                collision_point = player_car_mask.overlap(coming_cars_masks, offset)
+                offset = (int(car.rect.x - playerCar1.rect.x), int(car.rect.y - playerCar1.rect.y))
+                collision_point = player_car1_mask.overlap(coming_cars_masks, offset)
+
+            for car in all_coming_cars:
+                coming_cars_masks = car.create_mask()
+                offset = (int(car.rect.x - playerCar2.rect.x), int(car.rect.y - playerCar2.rect.y))
+                collision_point = player_car2_mask.overlap(coming_cars_masks, offset)
 
                 if collision_point:
                     car_crash = True
@@ -185,12 +220,25 @@ def car_racing():
             
             for powerUp in all_power_ups:
                 powerUpMask = powerUp.create_mask()
-                offset = (int(powerUp.rect.x - playerCar.rect.x), int(powerUp.rect.y - playerCar.rect.y))
-                collision_point = player_car_mask.overlap(powerUpMask, offset)
+                offset = (int(powerUp.rect.x - playerCar1.rect.x), int(powerUp.rect.y - playerCar1.rect.y))
+                collision_point = player_car1_mask.overlap(powerUpMask, offset)
+
+            for powerUp in all_power_ups:
+                powerUpMask = powerUp.create_mask()
+                offset = (int(powerUp.rect.x - playerCar2.rect.x), int(powerUp.rect.y - playerCar2.rect.y))
+                collision_point = player_car2_mask.overlap(powerUpMask, offset)
 
                 if collision_point:
                     print("Collision with powerup!")
-                    powerUp.affectPlayer(playerCar)
+                    powerUp.affectPlayer(playerCar1)
+                    powerUp.changeSpeed(random.randint(50, 70))
+                    powerUp.repaint(random.choice(powerUpTypes))
+                    powerUp.rect.y = random.randint(-1000, -100)
+                    powerUp.rect.x = random.choice(powerUpSpawnLocationsX)
+                    
+                if collision_point:
+                    print("Collision with powerup!")
+                    powerUp.affectPlayer(playerCar2)
                     powerUp.changeSpeed(random.randint(50, 70))
                     powerUp.repaint(random.choice(powerUpTypes))
                     powerUp.rect.y = random.randint(-1000, -100)

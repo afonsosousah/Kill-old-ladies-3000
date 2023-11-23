@@ -2,6 +2,7 @@ import pygame
 import pygame.gfxdraw
 import sys
 from car_selector import car_selector
+from multiplayer_game import multiplayer_racing
 
 
 # Creating a function that creates the GUI
@@ -63,6 +64,10 @@ def interface():
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if 210 <= mouse[0] <= 510 and 240 <= mouse[1] <= 300:
                     car_selector()
+            # pressing the multiplayer button
+            if ev.type == pygame.MOUSEBUTTONDOWN:
+                if 210 <= mouse[0] <= 210 + 300 and 320 <= mouse[1] <= 320 + 60:
+                    multiplayer_racing()
         # setting the background color as black
         screen.fill(black)
         
