@@ -45,7 +45,7 @@ class Power_Up(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         
     def affectPlayer(self, player):
-        powerUpTypes = ("invincibility", "slowing", "repaint")
+        powerUpTypes = ("invincibility", "slowing", "repaint", "invisibility")
         
         if self.type == "random":
             self.type = random.choice(powerUpTypes)

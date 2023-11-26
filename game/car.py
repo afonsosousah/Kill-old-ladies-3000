@@ -54,6 +54,11 @@ class Car(pygame.sprite.Sprite):
         if self.flip:
             self.image = pygame.transform.flip(self.image, True, True)
 
+    def invisible(self, type):
+        self.image = pygame.image.load(f'assets/ghostcar{random.randint(1,6)}.png').convert_alpha()
+        if self.flip:
+            self.image = pygame.transform.flip(self.image, True, True)
+
     def collide(self, mask, x=0, y=0):
         car_mask = pygame.mask.from_surface(self.image)
         offset = (int(self.rect.x - x), int(self.rect.y - y))
