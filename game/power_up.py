@@ -57,6 +57,10 @@ class Power_Up(pygame.sprite.Sprite):
             main.speed = 0.2
         elif self.type == "repaint":
             player.repaint()
+
+        elif self.type == "invisibility":
+            # To be defined
+            player.invisible()
         
         main.active_power_up = self
         self.startTime = pygame.time.get_ticks()
@@ -71,6 +75,8 @@ class Power_Up(pygame.sprite.Sprite):
         elif self.typeWhenActivated == "slowing":
             main.speed = 1
         elif self.typeWhenActivated == "repaint":
+            pass
+        elif self.typeWhenActivated == "invisibility":
             pass
         
         main.active_power_up = None
@@ -87,6 +93,10 @@ class Power_Up(pygame.sprite.Sprite):
         self.speed = speed
 
     def repaint(self, type):
+        self.image = pygame.image.load(f'assets/powerup_{type}.png')
+        self.type = type
+
+    def invisible(self, type):
         self.image = pygame.image.load(f'assets/powerup_{type}.png')
         self.type = type
     
