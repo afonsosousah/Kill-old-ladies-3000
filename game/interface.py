@@ -131,12 +131,13 @@ def credits_():
     color_dark = (100, 100, 100)
     width = screen.get_width()
     height = screen.get_height()
+    credits_background = pygame.image.load("assets/credits.png")
     corbelfont = pygame.font.SysFont('Corbel', 50)
-    back_text = corbelfont.render('   back', True, blue)
+    back_text = corbelfont.render('    back', True, blue)
     comicsansfont = pygame.font.SysFont('Comic Sans MS', 25)
-    line1_text = comicsansfont.render('Davide Farinati, dfarinati@novaims.unl.pt', True, yellow)
-    line2_text = comicsansfont.render('Joao Fonseca, jfonseca@novaims.unl.pt', True, yellow)
-    line3_text = comicsansfont.render('Liah Rosenfeld, lrosenfeld@novaims.unl.pt', True, yellow)
+    line1_text = comicsansfont.render('Afonso Hermenegildo, 20221958', True, yellow)
+    line2_text = comicsansfont.render('Diogo Oliveira, 20221928', True, yellow)
+    line3_text = comicsansfont.render('Tomás Rodrigues, 20221956', True, yellow)
 
     while True:
         mouse = pygame.mouse.get_pos()

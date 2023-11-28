@@ -54,8 +54,17 @@ class Car(pygame.sprite.Sprite):
         if self.flip:
             self.image = pygame.transform.flip(self.image, True, True)
 
-    def invisible(self, type):
-        self.image = pygame.image.load(f'assets/ghostcar{random.randint(1,6)}.png').convert_alpha()
+    def invisible(self):
+        # Save the original image of the car to restore it later
+        self.original_image = self.image
+        # Load the "ghost" version of the car
+        self.image = pygame.image.load(f'assets/ghostcar{self.model}.png').convert_alpha()
+        if self.flip:
+            self.image = pygame.transform.flip(self.image, True, True)
+
+    def visible(self):
+        # Restore the original image of the car
+        self.image = self.original_image
         if self.flip:
             self.image = pygame.transform.flip(self.image, True, True)
 

@@ -11,7 +11,7 @@ class Power_Up(pygame.sprite.Sprite):
     # A Power-Up something a player can “catch” by hitting it with the car. 
     # Catching a “Power-up” will affect the game in some way for a temporary amount of time.
     
-    # The available types of power-ups are: Invincibility, Slowing, Repaint and Random
+    # The available types of power-ups are: Invincibility, Slowing, Repaint, Invisibility and Random
     def __init__(self, type, speed, timeout = 3000):
         # Call the parent class (Sprite) constructor
         super().__init__()
@@ -77,7 +77,7 @@ class Power_Up(pygame.sprite.Sprite):
         elif self.typeWhenActivated == "repaint":
             pass
         elif self.typeWhenActivated == "invisibility":
-            pass
+            self.player.visible()
         
         main.active_power_up = None
         self.startTime = None
@@ -93,10 +93,6 @@ class Power_Up(pygame.sprite.Sprite):
         self.speed = speed
 
     def repaint(self, type):
-        self.image = pygame.image.load(f'assets/powerup_{type}.png')
-        self.type = type
-
-    def invisible(self, type):
         self.image = pygame.image.load(f'assets/powerup_{type}.png')
         self.type = type
     

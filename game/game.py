@@ -227,7 +227,6 @@ def car_racing():
                 if powerUp.rect.y > 3*SCREENHEIGHT:  # we are multiplying by 3 to spawn 3 times less powerups than cars
                     powerUp.changeSpeed(random.randint(50, 70))
                     powerUp.repaint(random.choice(powerUpTypes))
-                    powerUp.invisible(random.randint(50,70))
                     powerUp.rect.y = random.randint(-1000, -100)
                     powerUp.rect.x = random.choice(powerUpSpawnLocationsX)  # move to any of the spawn locations
             
