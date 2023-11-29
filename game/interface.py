@@ -118,54 +118,6 @@ def interface():
         # PYGAME BUILT IN FUCTION that updates the screen at every oteration of the loop
         pygame.display.update()
 
-
-def credits_():
-    res = (720, 720)
-    screen = pygame.display.set_mode(res)
-    white = (255, 255, 255)
-    yellow = (255, 255, 0)
-    red = (255, 0, 0)
-    green = (0, 255, 0)
-    blue = (0, 0, 255)
-    color_light = (170, 170, 170)
-    color_dark = (100, 100, 100)
-    width = screen.get_width()
-    height = screen.get_height()
-    credits_background = pygame.image.load("assets/credits.png")
-    corbelfont = pygame.font.SysFont('Corbel', 50)
-    back_text = corbelfont.render('    back', True, blue)
-    comicsansfont = pygame.font.SysFont('Comic Sans MS', 25)
-    line1_text = comicsansfont.render('Afonso Hermenegildo, 20221958', True, yellow)
-    line2_text = comicsansfont.render('Diogo Oliveira, 20221928', True, yellow)
-    line3_text = comicsansfont.render('Tomás Rodrigues, 20221956', True, yellow)
-
-    while True:
-        mouse = pygame.mouse.get_pos()
-        for ev in pygame.event.get():
-            # press on exit button
-            if ev.type == pygame.QUIT:
-                pygame.quit()
-            # press on quit button
-            if ev.type == pygame.MOUSEBUTTONDOWN:
-                if 450 <= mouse[0] <= 450 + 140 and 5 * 120 <= mouse[
-                    1] <= 5 * 120 + 60:
-                    interface()
-        screen.fill((0, 0, 0))
-        # credits text
-        screen.blit(line1_text, (0, 0))
-        screen.blit(line2_text, (0, 25))
-        screen.blit(line3_text, (0, 50))
-        # back text
-        if 450 <= mouse[0] <= 450 + 140 and 5 * 120 <= mouse[1] <= 5 * 120 + 60:
-            pygame.draw.rect(screen, red, [450, 5 * 120, 140, 60])
-        else:
-            pygame.draw.rect(screen, color_dark, [450, 5 * 120, 140, 60])
-        screen.blit(back_text, (450, 5 * 120))
-
-        pygame.display.update()
-
-
-
 def drawRhomboid(surface, color, outline_color, x, y, width, height, offset, thickness=0):
     points = [
         (x + offset, y), 
@@ -179,3 +131,52 @@ def drawRhomboid(surface, color, outline_color, x, y, width, height, offset, thi
         (x + 2*thickness, y + height - thickness)]
     pygame.gfxdraw.filled_polygon(surface, points, color)
     pygame.draw.polygon(surface, outline_color, points, thickness)
+
+
+def credits_():
+    res = (720, 720)
+    screen = pygame.display.set_mode(res)
+    
+    # creating some important colors
+    white = (255, 255, 255)
+    red = (255, 0, 0)
+
+    width = screen.get_width()
+    height = screen.get_height()
+    credits_background = pygame.image.load("assets/credits.png")
+
+    # creating buttons text label
+    corbelfont = pygame.font.SysFont('Corbel', 40, bold=True, italic=True)
+    back_text = corbelfont.render('Back', True, white)
+
+    # comicsansfont = pygame.font.SysFont('Comic Sans MS', 25)
+    # line1_text = comicsansfont.render('Afonso Hermenegildo, 20221958', True, yellow)
+    # line2_text = comicsansfont.render('Diogo Oliveira, 20221928', True, yellow)
+    # line3_text = comicsansfont.render('Tomás Rodrigues, 20221956', True, yellow)
+
+    while True:
+        mouse = pygame.mouse.get_pos()
+        for ev in pygame.event.get():
+            # press on exit button
+            if ev.type == pygame.QUIT:
+                pygame.quit()
+            # press the back button
+            if ev.type == pygame.MOUSEBUTTONDOWN:
+                if 75 <= mouse[0] <= 225 and 620 <= mouse[1] <= 680:
+                    interface()
+                    
+        screen.blit(pygame.image.load('assets/credits.png'), [0, 0, width, height])
+
+        # credits text
+        # screen.blit(line1_text, (0, 0))
+        # screen.blit(line2_text, (0, 25))
+        # screen.blit(line3_text, (0, 50))
+        
+        # back text
+        if 75 <= mouse[0] <= 225 and 620 <= mouse[1] <= 680:
+            drawRhomboid(screen, red, white, 75, 620, 150, 60, 30, 5)
+        else:
+            drawRhomboid(screen, red, red, 75, 620, 150, 60, 30, 5)
+        screen.blit(back_text, (75 + 12.5 + (150 - back_text.get_width())/2, 620 + 12.5)) 
+
+        pygame.display.update()
