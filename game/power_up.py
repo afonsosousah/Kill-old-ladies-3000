@@ -45,39 +45,41 @@ class Power_Up(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         
     def affectPlayer(self, player):
+        # Disable the previous power up before setting the new one
+        if main.active_power_up:
+            main.active_power_up.deactivate(player)
+            
+            
         powerUpTypes = ("invincibility", "slowing", "repaint", "invisibility")
         
         if self.type == "random":
             self.type = random.choice(powerUpTypes)
         
         if self.type == "invincibility":
-            # To be defined
-            player.bounce()
+            player.invincible = True
         elif self.type == "slowing":
             main.speed = 0.2
         elif self.type == "repaint":
-            player.repaint()
-
+            player.repaint(isPlayer=True)
         elif self.type == "invisibility":
-            # To be defined
             player.invisible()
         
+        # Store the active power up
         main.active_power_up = self
         self.startTime = pygame.time.get_ticks()
         self.typeWhenActivated = self.type
     
-    def deactivate(self):
+    def deactivate(self, player):
         print("deactivate power up")
         
         if self.typeWhenActivated == "invincibility":
-            # To be defined
-            pass
+            player.invincible = False
         elif self.typeWhenActivated == "slowing":
             main.speed = 1
         elif self.typeWhenActivated == "repaint":
             pass
         elif self.typeWhenActivated == "invisibility":
-            self.player.visible()
+            player.visible()
         
         main.active_power_up = None
         self.startTime = None

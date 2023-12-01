@@ -1,4 +1,7 @@
 import pygame, random
+import game
+import main
+
 WHITE = (255, 255, 255)
 
 class Car(pygame.sprite.Sprite):
@@ -22,7 +25,12 @@ class Car(pygame.sprite.Sprite):
         self.height = height
         self.color = color
         self.speed = speed
+        self.side_speed = 0
         self.flip = flip
+        self.model = model
+        
+        # Power up atributes
+        self.invincible = False
 
         # Draw the car (a rectangle!)
             #pygame.draw.rect(self.image, self.color, [0, 0, self.width, self.height])
@@ -35,10 +43,22 @@ class Car(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def moveRight(self, pixels):
-        self.rect.x += pixels
+        new_speed = self.side_speed + (pixels / 20)
+        if new_speed <= 7 and new_speed >= -7:
+            self.side_speed = new_speed
+        if not self.collide(game.MAP_BORDER_MASK, -self.side_speed):
+            self.rect.x += self.side_speed
+        else:
+            self.bounce()
 
     def moveLeft(self, pixels):
-        self.rect.x -= pixels
+        new_speed = self.side_speed - (pixels / 20)
+        if new_speed <= 7 and new_speed >= -7:
+            self.side_speed = new_speed
+        if not self.collide(game.MAP_BORDER_MASK, -self.side_speed):
+            self.rect.x += self.side_speed
+        else:
+            self.bounce()
 
     def moveForward(self, speed):
         self.rect.y += self.speed * speed / 20
@@ -49,12 +69,19 @@ class Car(pygame.sprite.Sprite):
     def changeSpeed(self, speed):
         self.speed = speed
 
-    def repaint(self):
-        self.image = pygame.image.load(f"assets/car{random.randint(1,6)}.png").convert_alpha()
+    def repaint(self, isPlayer=False):
+        new_model = random.randint(1,6)
+        
+        if isPlayer:
+            main.selected_car = new_model
+        
+        self.image = pygame.image.load(f"assets/car{new_model}.png").convert_alpha()
         if self.flip:
             self.image = pygame.transform.flip(self.image, True, True)
 
     def invisible(self):
+        # Make the car not collide
+        self.invincible = True
         # Save the original image of the car to restore it later
         self.original_image = self.image
         # Load the "ghost" version of the car
@@ -63,6 +90,8 @@ class Car(pygame.sprite.Sprite):
             self.image = pygame.transform.flip(self.image, True, True)
 
     def visible(self):
+        # Make the car collide again
+        self.invincible = False
         # Restore the original image of the car
         self.image = self.original_image
         if self.flip:
@@ -75,14 +104,17 @@ class Car(pygame.sprite.Sprite):
         return poi
     
     def bounce(self):
+        # make the car slower
         self.speed -= 0.05
         if self.rect.x < 800/2:
             # car hit the left border
-            self.moveRight(20)
+            self.side_speed += 10
+            self.rect.x += self.side_speed
         else:
             # car hit the right border
-            self.moveLeft(20) 
-
+            self.side_speed -= 10
+            self.rect.x += self.side_speed
+    
     def create_mask(self):
         return pygame.mask.from_surface(self.image)
 
