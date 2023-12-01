@@ -39,7 +39,7 @@ def interface():
     corbelfont = pygame.font.SysFont('Corbel', 40, bold=True, italic=True)
     game1_text = corbelfont.render('Singleplayer', True, white)
     game2_text = corbelfont.render('Multiplayer', True, white)
-    game3_text = corbelfont.render('Infinite Mode', True, white)
+    game3_text = corbelfont.render('How to Play', True, white)
     credits_text = corbelfont.render('Credits', True, white)
     quit_text = corbelfont.render('Quit', True, white)
     
