@@ -40,13 +40,23 @@ def car_racing():
     mapY1 = -1200
 
     # Creating the score
+    score_background = pygame.image.load("assets/score_background.png").convert_alpha()
+    score_background = pygame.transform.scale(score_background, (80,47))
     score_value = 0
-    score_font = pygame.font.SysFont('Corbel', 25, bold = True)
+    score_font = pygame.font.SysFont('Corbel', 20, bold = True)
     score_text = score_font.render("Score: " + str(score_value), True, (255, 255, 255))
 
     # Creating the speed text
-    speed_font = pygame.font.SysFont('Corbel', 25, bold = True)
-    speed_text = speed_font.render("Vel: " + str(0) + "km/h", True, (255, 255, 255))
+    # speed_font = pygame.font.SysFont('Corbel', 25, bold = True)
+    # speed_text = speed_font.render("Vel: " + str(0) + "km/h", True, (255, 255, 255))
+
+    # Creating the speedometer
+    speedometer = pygame.image.load("assets/speedometer.png").convert_alpha()
+    speedometer = pygame.transform.scale(speedometer, (140,130))
+
+    # Creating the pointer
+    pointer = pygame.image.load("assets/pointer.png").convert_alpha()
+    pointer = pygame.transform.scale(pointer, (70,50))
 
     # Creating the pause button
     pause = False
@@ -185,13 +195,32 @@ def car_racing():
                 mapY0 += main.speed * 2
                 mapY1 += main.speed * 2
 
-            # Drawing the score text
-            score_text = score_font.render("Score: " + str(score_value), True, (255, 255, 255))
-            screen.blit(score_text, (10, 10))
+            # Drawing the score
+            screen.blit(score_background, (10, 10))
+            score_text = score_font.render(str(score_value), True, (255, 255, 255))
+            screen.blit(score_text, (45, 32))
 
             # Drawing the speed text
-            speed_text = speed_font.render("Speed: " + str(math.floor(main.speed * 50)) + " km/h", True, (255, 255, 255))
-            screen.blit(speed_text, (10, 40))
+            # speed_text = speed_font.render("Speed: " + str(math.floor(main.speed * 50)) + " km/h", True, (255, 255, 255))
+            # screen.blit(speed_text, (10, 40))
+
+            # Defining the position of the speedometer and calculating the angle for the pointer
+            speedometer_rect = speedometer.get_rect(center=(750, 550))
+            angle = playerCar.speed_to_angle(math.floor(main.speed * 50))
+
+            # Rotate the pointer around its base
+            rotated_pointer = pygame.transform.rotate(pointer, -angle)
+            pointer_rect = rotated_pointer.get_rect()
+
+            # The pivot should be the base of the needle on the speedometer
+            pivot = (speedometer.get_width() // 2, speedometer.get_height() // 2)
+
+            # Calculate the new center of the rotated pointer image
+            rotated_pointer_center = (pivot[0] - pointer_rect.width // 2, pivot[1] - pointer_rect.height // 2)
+
+            # Drawing the speedometer and the pointer
+            screen.blit(speedometer,speedometer_rect)
+            screen.blit(rotated_pointer,rotated_pointer_center)
 
             # Drawing the pause button
             screen.blit(pause_button, (725,15))

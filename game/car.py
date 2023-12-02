@@ -117,5 +117,9 @@ class Car(pygame.sprite.Sprite):
     
     def create_mask(self):
         return pygame.mask.from_surface(self.image)
+    
+    def speed_to_angle(self, speed):
+        # converting speed from 0 to 120 to an angle from 0 to 180 degrees
+        return (speed / 120) * 270
 
 
