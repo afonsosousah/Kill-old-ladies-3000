@@ -6,9 +6,9 @@ WHITE = (255, 255, 255)
 
 powerUpKeys = {}
 
-class Power_Up(pygame.sprite.Sprite):
+class PowerUp(pygame.sprite.Sprite):
     # This class represents a Power-Up
-    # A Power-Up something a player can “catch” by hitting it with the car. 
+    # A Power-Up is something a player can “catch” by hitting it with the car. 
     # Catching a “Power-up” will affect the game in some way for a temporary amount of time.
     
     # The available types of power-ups are: Invincibility, Slowing, Repaint, Invisibility and Random
@@ -16,14 +16,10 @@ class Power_Up(pygame.sprite.Sprite):
         # Call the parent class (Sprite) constructor
         super().__init__()
 
-        # Pass in the color of the car, and its x and y position, width and height.
-        # Set the background color and set it to be transparent
-        #self.image = pygame.Surface([50, 50])
-        #self.image.fill(WHITE)
-        #self.image.set_colorkey(WHITE)
+        # Set the power up image
         self.image = pygame.image.load(f'assets/powerup_{type}.png')
 
-        #Initialise attributes of the car.
+        #Initialise attributes of the sprite.
         self.width = 50
         self.height = 50
         self.speed = speed
@@ -34,12 +30,7 @@ class Power_Up(pygame.sprite.Sprite):
         self.typeWhenActivated = None  # store what was the type when the power up was last activated
         # we need to do this because the powerup will be reused after colliding with the player
         # and its type can change
-
-        # Draw the car (a rectangle!)
-        #pygame.draw.circle(self.image, self.color, [self.width/2, self.height/2], self.width/2)
-
-        # Instead we could load a proper picture of a car...
-        # self.image = pygame.image.load("car.png").convert_alpha()
+        
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
@@ -50,7 +41,7 @@ class Power_Up(pygame.sprite.Sprite):
             main.active_power_up.deactivate(player)
         
             
-        powerUpTypes = ("invincibility", "slowing", "repaint", "random", "invisibility", "refuel")
+        powerUpTypes = ("invincibility", "slowing", "repaint", "random", "invisibility")
         
         if self.type == "random":
             self.type = random.choice(powerUpTypes)
@@ -64,8 +55,6 @@ class Power_Up(pygame.sprite.Sprite):
             player.repaint(isPlayer=True)
         elif self.type == "invisibility":
             player.setInvisible()
-        elif self.type == "refuel":
-            player.refuel()
         
         # Store the active power up
         main.active_power_up = self
@@ -85,8 +74,6 @@ class Power_Up(pygame.sprite.Sprite):
             pass
         elif self.typeWhenActivated == "invisibility":
             player.setVisible()
-        elif self.typeWhenActivated == "refuel":
-            pass
         
         main.active_power_up = None
         self.startTime = None

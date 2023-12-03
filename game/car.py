@@ -123,7 +123,7 @@ class Car(pygame.sprite.Sprite):
         return pygame.mask.from_surface(self.image)
 
     def refuel(self):
-        self.fuel_level += 0.1
+        self.fuel_level += 0.5
         self.fuel_level = min(self.fuel_level, 1.0) # Prevent overfilling
 
 

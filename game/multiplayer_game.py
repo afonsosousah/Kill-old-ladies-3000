@@ -1,4 +1,4 @@
-import pygame, random
+'''import pygame, random
 # Let's import the Car class and the Map class
 from car import Car
 from power_up import Power_Up
@@ -253,12 +253,6 @@ def multiplayer_racing():
                     car.repaint()
                     car.rect.y = random.randint(-1000, -100)
                     score_value += 1
-
-                '''# Check if there is a car collision
-                car_collision_list = pygame.sprite.spritecollide(playerCar, all_coming_cars, False)
-                for car in car_collision_list:
-                    print("Car crash!")
-                    car_crash = True'''
             
             # Power Ups
             for powerUp in all_power_ups:
@@ -320,4 +314,4 @@ def multiplayer_racing():
                        
 
             #Number of frames per secong e.g. 60
-            clock.tick(60)
+            clock.tick(60)'''

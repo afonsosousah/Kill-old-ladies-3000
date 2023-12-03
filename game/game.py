@@ -1,7 +1,8 @@
 import pygame, random
 # Let's import the Car class and the Map class
 from car import Car
-from power_up import Power_Up
+from power_up import PowerUp
+from fuel_can import FuelCan
 import main
 import interface
 import math
@@ -121,10 +122,10 @@ def car_racing():
     powerUpSpawnLocationsX = (250, 390, 500)  # spawn in the middle of the lanes
     
     # Define what are the available types of power ups
-    powerUpTypes = ("invincibility", "slowing", "repaint", "random", "invisibility", "refuel")
+    powerUpTypes = ("invincibility", "slowing", "repaint", "random", "invisibility")
     
     # Creating the Power Ups
-    powerUp1 = Power_Up(random.choice(powerUpTypes), random.randint(50,100))
+    powerUp1 = PowerUp(random.choice(powerUpTypes), random.randint(50,100))
     powerUp1.rect.x = random.choice(powerUpSpawnLocationsX)
     powerUp1.rect.y = -300
     
@@ -132,8 +133,15 @@ def car_racing():
     all_power_ups = pygame.sprite.Group()
     all_power_ups.add(powerUp1)
     all_sprites_list.add(powerUp1)
+    
+    
+    # Creating the Fuel Can
+    fuel_can = FuelCan(1)
+    fuel_can.rect.x = random.choice(powerUpSpawnLocationsX)
+    fuel_can.rect.y = -200
 
-
+    all_sprites_list.add(fuel_can)
+    
 
     # Allowing the user to close the window...
     carryOn = True
@@ -141,7 +149,7 @@ def car_racing():
     wait_for_key = True
     
     # Set the initial fuel level (1.0 represents a full tank)
-    fuel_level = 1.0
+    playerCar.fuel_level = 1.0
 
     # Play game soundtrack
     #pygame.mixer.music.load('assets/game_soundtrack.mp3')
@@ -239,10 +247,11 @@ def car_racing():
                         and not(main.active_power_up != None and main.active_power_up.typeWhenActivated == "slowing"):
                         main.speed -= 0.05
 
+
             # Create the player mask for the collisions
             player_car_mask = playerCar.create_mask()
 
-            # Pixel perfect collision between player and cars
+            ''' Pixel perfect collision between player and cars '''
             for car in all_coming_cars:
                 coming_cars_masks = car.create_mask()
                 offset = (int(car.rect.x - playerCar.rect.x), int(car.rect.y - playerCar.rect.y))
@@ -261,7 +270,7 @@ def car_racing():
                     print("Collision!")
 
         
-            # Pixel perfect collision between player and powerups
+            ''' Pixel perfect collision between player and powerups '''
             if(not pause):
                 for powerUp in all_power_ups:
                     powerUpMask = powerUp.create_mask()
@@ -274,6 +283,20 @@ def car_racing():
                         powerUp.repaint(random.choice([pwrup for pwrup in powerUpTypes if pwrup != powerUp.type])) # Repaint to a different power up
                         powerUp.rect.y = random.randint(-1500, -500)
                         powerUp.rect.x = random.choice(powerUpSpawnLocationsX)  # move to any of the spawn locations
+
+
+            ''' Pixel perfect collision between player and fuel cans '''
+            if not pause:
+                fuelCanMask = fuel_can.create_mask()
+                offset = (int(fuel_can.rect.x - playerCar.rect.x), int(fuel_can.rect.y - playerCar.rect.y))
+                collision_point = player_car_mask.overlap(fuelCanMask, offset)
+                if collision_point:
+                    print("Collision with fuel can!")
+                    playerCar.refuel()
+                    # respawn the fuel can
+                    fuel_can.rect.y = random.randint(-2000, -1000)
+                    # move to any of the spawn locations different to the current one
+                    fuel_can.rect.x = random.choice([loc for loc in powerUpSpawnLocationsX if loc != fuel_can.rect.x])
 
 
             ''' Respawn cars '''
@@ -296,17 +319,27 @@ def car_racing():
                         powerUp.repaint(random.choice([pwrup for pwrup in powerUpTypes if pwrup != powerUp.type])) # Repaint to a different power up
                         powerUp.rect.y = random.randint(-1500, -500)
                         powerUp.rect.x = random.choice(powerUpSpawnLocationsX)  # move to any of the spawn locations
+                        
+            
+            ''' Respawn fuel cans'''
+            if not pause:
+                fuel_can.moveForward(main.speed)
+                if fuel_can.rect.y > SCREENHEIGHT * 2: # we are multiplying by 2 to spawn 2 times less fuel cans than cars
+                    fuel_can.rect.y = random.randint(-300, -50)
+                    # move to any of the spawn locations different to the current one
+                    fuel_can.rect.x = random.choice([loc for loc in powerUpSpawnLocationsX if loc != fuel_can.rect.x])
             
             
             ''' Power up logic '''
             if(not pause):
                 if main.active_power_up != None:
                     # Display remaining power up time
-                    if (main.active_power_up.timeout - (pygame.time.get_ticks() - main.active_power_up.startTime)) > 0:
+                    if ((main.active_power_up.timeout - (pygame.time.get_ticks() - main.active_power_up.startTime)) > 0 and
+                        main.active_power_up.typeWhenActivated != "repaint"):
                         powerUpTimer_background = pygame.image.load("assets/timer_background.png").convert_alpha()
                         powerUpTimer_value = round((main.active_power_up.timeout - (pygame.time.get_ticks() - main.active_power_up.startTime)) / 1000, 1)
-                        powerUpTimer_font = pygame.font.SysFont('Corbel', 500, bold = True)
-                        powerUpTimer_text = score_font.render(str(powerUpTimer_value) + "s", True, (0,0,0))
+                        powerUpTimer_font = pygame.font.SysFont('Corbel', 23, bold = True)
+                        powerUpTimer_text = powerUpTimer_font.render(str(powerUpTimer_value) + "s", True, (0,0,0))
                         screen.blit(powerUpTimer_background, (0, 120 - (powerUpTimer_background.get_height() // 2)))
                         screen.blit(powerUpTimer_text, ((powerUpTimer_background.get_width() // 2) - (powerUpTimer_text.get_width() // 2), 120 - (powerUpTimer_text.get_height() // 2) + 5))
 
@@ -343,12 +376,12 @@ def car_racing():
 
             ''' Gasmeter '''
             # Update fuel level and ensure doesn't go below 0
-            fuel_level -= 0.001
-            fuel_level = max(fuel_level, 0)
+            playerCar.fuel_level -= 0.0005 * main.speed  # make the fuel depend on the speed
+            playerCar.fuel_level = max(playerCar.fuel_level, 0)
 
             # Defining the position of the gasmeter and calculating the angle for the pointer
             gasmeter_rect = (20, 460, gasmeter.get_rect().x, gasmeter.get_rect().y)
-            gas_angle = -270 * (1 - fuel_level)
+            gas_angle = -270 * (1 - playerCar.fuel_level)
 
             # Rotate the pointer around its base
             rotated_gas_pointer = pygame.transform.rotate(gas_pointer, -gas_angle)
@@ -360,7 +393,7 @@ def car_racing():
             # Calculate the new center of the rotated pointer image
             rotated_gas_pointer_center = (pivot[0] - (gas_pointer_rect.width // 2), pivot[1] - (gas_pointer_rect.height // 2))
 
-            # Drawing the speedometer and the pointer
+            # Drawing the gasmeter and the pointer
             screen.blit(gasmeter, gasmeter_rect)
             screen.blit(rotated_gas_pointer, rotated_gas_pointer_center)
 
