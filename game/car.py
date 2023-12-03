@@ -28,6 +28,7 @@ class Car(pygame.sprite.Sprite):
         self.side_speed = 0
         self.flip = flip
         self.model = model
+        self.fuel_level = 1.0
         
         # Power up atributes
         self.invincible = False
@@ -120,5 +121,9 @@ class Car(pygame.sprite.Sprite):
     
     def create_mask(self):
         return pygame.mask.from_surface(self.image)
+
+    def refuel(self):
+        self.fuel_level += 0.1
+        self.fuel_level = min(self.fuel_level, 1.0) # Prevent overfilling
 
 

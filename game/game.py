@@ -50,9 +50,17 @@ def car_racing():
     speedometer = pygame.image.load("assets/speedometer.png").convert_alpha()
     speedometer = pygame.transform.scale(speedometer, (120, 120))
 
-    # Creating the pointer
+    # Creating the speedmeter pointer
     pointer = pygame.image.load("assets/pointer.png").convert_alpha()
     pointer = pygame.transform.scale(pointer, (120, 120))
+
+    # Creating the gasmeter
+    gasmeter = pygame.image.load("assets/gasmeter.png").convert_alpha()
+    gasmeter = pygame.transform.scale(gasmeter, (120, 120))
+
+    # Creating the gasmeter pointer
+    gas_pointer = pygame.image.load("assets/gas_pointer.png").convert_alpha()
+    gas_pointer = pygame.transform.scale(gas_pointer, (120, 120))
 
     # Creating the pause button
     pause = False
@@ -113,7 +121,7 @@ def car_racing():
     powerUpSpawnLocationsX = (250, 390, 500)  # spawn in the middle of the lanes
     
     # Define what are the available types of power ups
-    powerUpTypes = ("invincibility", "slowing", "repaint", "random", "invisibility")
+    powerUpTypes = ("invincibility", "slowing", "repaint", "random", "invisibility", "refuel")
     
     # Creating the Power Ups
     powerUp1 = Power_Up(random.choice(powerUpTypes), random.randint(50,100))
@@ -132,7 +140,9 @@ def car_racing():
     clock=pygame.time.Clock()
     wait_for_key = True
     
-    
+    # Set the initial fuel level (1.0 represents a full tank)
+    fuel_level = 1.0
+
     # Play game soundtrack
     #pygame.mixer.music.load('assets/game_soundtrack.mp3')
     #pygame.mixer.music.play(-1)
@@ -329,6 +339,30 @@ def car_racing():
             # Drawing the speedometer and the pointer
             screen.blit(speedometer, speedometer_rect)
             screen.blit(rotated_pointer, rotated_pointer_center)
+
+
+            ''' Gasmeter '''
+            # Update fuel level and ensure doesn't go below 0
+            fuel_level -= 0.001
+            fuel_level = max(fuel_level, 0)
+
+            # Defining the position of the gasmeter and calculating the angle for the pointer
+            gasmeter_rect = (20, 460, gasmeter.get_rect().x, gasmeter.get_rect().y)
+            gas_angle = -270 * (1 - fuel_level)
+
+            # Rotate the pointer around its base
+            rotated_gas_pointer = pygame.transform.rotate(gas_pointer, -gas_angle)
+            gas_pointer_rect = rotated_gas_pointer.get_rect()
+
+            # The pivot should be the center of the gasmeter
+            pivot = (gasmeter_rect[0] + (gasmeter.get_width() // 2), gasmeter_rect[1] + (gasmeter.get_height() // 2) + 2)
+
+            # Calculate the new center of the rotated pointer image
+            rotated_gas_pointer_center = (pivot[0] - (gas_pointer_rect.width // 2), pivot[1] - (gas_pointer_rect.height // 2))
+
+            # Drawing the speedometer and the pointer
+            screen.blit(gasmeter, gasmeter_rect)
+            screen.blit(rotated_gas_pointer, rotated_gas_pointer_center)
 
 
             ''' Wait for key press to start '''

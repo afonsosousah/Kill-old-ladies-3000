@@ -50,7 +50,7 @@ class Power_Up(pygame.sprite.Sprite):
             main.active_power_up.deactivate(player)
         
             
-        powerUpTypes = ("invincibility", "slowing", "repaint", "random", "invisibility")
+        powerUpTypes = ("invincibility", "slowing", "repaint", "random", "invisibility", "refuel")
         
         if self.type == "random":
             self.type = random.choice(powerUpTypes)
@@ -64,6 +64,8 @@ class Power_Up(pygame.sprite.Sprite):
             player.repaint(isPlayer=True)
         elif self.type == "invisibility":
             player.setInvisible()
+        elif self.type == "refuel":
+            player.refuel()
         
         # Store the active power up
         main.active_power_up = self
@@ -83,6 +85,8 @@ class Power_Up(pygame.sprite.Sprite):
             pass
         elif self.typeWhenActivated == "invisibility":
             player.setVisible()
+        elif self.typeWhenActivated == "refuel":
+            pass
         
         main.active_power_up = None
         self.startTime = None
