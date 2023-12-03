@@ -7,8 +7,8 @@ def main():
     pygame.init()
     
     # Play game soundtrack
-    pygame.mixer.music.load('assets/game_soundtrack.mp3')
-    pygame.mixer.music.play(-1)
+    #pygame.mixer.music.load('assets/game_soundtrack.mp3')
+    #pygame.mixer.music.play(-1)
     
     # Go to main menu
     interface()

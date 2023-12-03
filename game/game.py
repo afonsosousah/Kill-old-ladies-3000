@@ -48,11 +48,11 @@ def car_racing():
 
     # Creating the speedometer
     speedometer = pygame.image.load("assets/speedometer.png").convert_alpha()
-    speedometer = pygame.transform.scale(speedometer, (160, 160))
+    speedometer = pygame.transform.scale(speedometer, (120, 120))
 
     # Creating the pointer
     pointer = pygame.image.load("assets/pointer.png").convert_alpha()
-    pointer = pygame.transform.scale(pointer, (160, 160))
+    pointer = pygame.transform.scale(pointer, (120, 120))
 
     # Creating the pause button
     pause = False
@@ -94,11 +94,11 @@ def car_racing():
     
 
     # Add the car to the list of objects
-    all_sprites_list.add(playerCar)
     all_sprites_list.add(car1)
     all_sprites_list.add(car2)
     all_sprites_list.add(car3)
     all_sprites_list.add(car4)
+    all_sprites_list.add(playerCar)
 
     # Create a list of the enemy cars
     all_coming_cars = pygame.sprite.Group()
@@ -134,8 +134,8 @@ def car_racing():
     
     
     # Play game soundtrack
-    pygame.mixer.music.load('assets/game_soundtrack.mp3')
-    pygame.mixer.music.play(-1)
+    #pygame.mixer.music.load('assets/game_soundtrack.mp3')
+    #pygame.mixer.music.play(-1)
 
 
     while carryOn:
@@ -220,12 +220,12 @@ def car_racing():
                     playerCar.moveRight(8)
                 if (keys[pygame.K_UP] or keys[pygame.K_w]) and not car_crash:
                     # setting max speed (120kph) and not letting speed up if slowing power up
-                    if math.floor((main.speed + 0.03) * 50) <= 150 \
+                    if math.floor((main.speed + 0.03) * 50) <= 270 \
                         and not (main.active_power_up != None and main.active_power_up.typeWhenActivated == "slowing"):
                         main.speed += 0.03
                 if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not car_crash:
                     # setting min speed (50kph) and not letting speed down if slowing power up
-                    if math.floor((main.speed - 0.05) * 50) >= 50 \
+                    if math.floor((main.speed - 0.05) * 50) >= 30 \
                         and not(main.active_power_up != None and main.active_power_up.typeWhenActivated == "slowing"):
                         main.speed -= 0.05
 
@@ -237,14 +237,19 @@ def car_racing():
                 coming_cars_masks = car.create_mask()
                 offset = (int(car.rect.x - playerCar.rect.x), int(car.rect.y - playerCar.rect.y))
                 collision_point = player_car_mask.overlap(coming_cars_masks, offset)
-                if collision_point and not playerCar.invincible:
-                    car_crash = True
-                    print("Collision!")
-                elif collision_point and playerCar.invincible:
+                if collision_point and playerCar.invincible:
+                    # Respawn the car and make it disappear
                     car.changeSpeed(random.randint(50,100))
                     car.repaint()
                     car.rect.y = random.randint(-1000, -100)
                     score_value += 1
+                elif collision_point and playerCar.invisible:
+                    # Just go over the car
+                    score_value += 1
+                elif collision_point:
+                    car_crash = True
+                    print("Collision!")
+
         
             # Pixel perfect collision between player and powerups
             if(not pause):
@@ -308,7 +313,7 @@ def car_racing():
             
             ''' Speedometer '''
             # Defining the position of the speedometer and calculating the angle for the pointer
-            speedometer_rect = (630, 430, speedometer.get_rect().x, speedometer.get_rect().y)
+            speedometer_rect = (660, 460, speedometer.get_rect().x, speedometer.get_rect().y)
             angle = math.floor(main.speed * 50) # convert the speed
 
             # Rotate the pointer around its base
@@ -375,6 +380,8 @@ def car_racing():
             if(car_crash):
                 # Stop the cars
                 main.speed = 0
+                
+                #pygame.mixer.music.stop()
                 
                 # Show the Game Over art
                 screen.blit(pygame.image.load('assets/game_over.png'), [0, 0, SCREENWIDTH, SCREENHEIGHT])

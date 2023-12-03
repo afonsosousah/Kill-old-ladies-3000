@@ -31,6 +31,7 @@ class Car(pygame.sprite.Sprite):
         
         # Power up atributes
         self.invincible = False
+        self.invisible = False
 
         # Draw the car (a rectangle!)
             #pygame.draw.rect(self.image, self.color, [0, 0, self.width, self.height])
@@ -81,9 +82,9 @@ class Car(pygame.sprite.Sprite):
         if self.flip:
             self.image = pygame.transform.flip(self.image, True, True)
 
-    def invisible(self):
+    def setInvisible(self):
         # Make the car not collide
-        self.invincible = True
+        self.invisible = True
         # Save the original image of the car to restore it later
         self.original_image = self.image
         # Load the "ghost" version of the car
@@ -91,9 +92,9 @@ class Car(pygame.sprite.Sprite):
         if self.flip:
             self.image = pygame.transform.flip(self.image, True, True)
 
-    def visible(self):
+    def setVisible(self):
         # Make the car collide again
-        self.invincible = False
+        self.invisible = False
         # Restore the original image of the car
         self.image = self.original_image
         if self.flip:

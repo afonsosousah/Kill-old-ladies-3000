@@ -63,7 +63,7 @@ class Power_Up(pygame.sprite.Sprite):
         elif self.type == "repaint":
             player.repaint(isPlayer=True)
         elif self.type == "invisibility":
-            player.invisible()
+            player.setInvisible()
         
         # Store the active power up
         main.active_power_up = self
@@ -82,7 +82,7 @@ class Power_Up(pygame.sprite.Sprite):
         elif self.typeWhenActivated == "repaint":
             pass
         elif self.typeWhenActivated == "invisibility":
-            player.visible()
+            player.setVisible()
         
         main.active_power_up = None
         self.startTime = None
