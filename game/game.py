@@ -46,17 +46,13 @@ def car_racing():
     score_font = pygame.font.SysFont('Corbel', 20, bold = True)
     score_text = score_font.render("Score: " + str(score_value), True, (255, 255, 255))
 
-    # Creating the speed text
-    # speed_font = pygame.font.SysFont('Corbel', 25, bold = True)
-    # speed_text = speed_font.render("Vel: " + str(0) + "km/h", True, (255, 255, 255))
-
     # Creating the speedometer
     speedometer = pygame.image.load("assets/speedometer.png").convert_alpha()
-    speedometer = pygame.transform.scale(speedometer, (140,130))
+    speedometer = pygame.transform.scale(speedometer, (160, 160))
 
     # Creating the pointer
     pointer = pygame.image.load("assets/pointer.png").convert_alpha()
-    pointer = pygame.transform.scale(pointer, (70,50))
+    pointer = pygame.transform.scale(pointer, (160, 160))
 
     # Creating the pause button
     pause = False
@@ -135,6 +131,11 @@ def car_racing():
     carryOn = True
     clock=pygame.time.Clock()
     wait_for_key = True
+    
+    
+    # Play game soundtrack
+    pygame.mixer.music.load('assets/game_soundtrack.mp3')
+    pygame.mixer.music.play(-1)
 
 
     while carryOn:
@@ -145,12 +146,14 @@ def car_racing():
                 elif event.type==pygame.KEYDOWN:
                     if event.key==pygame.K_x:
                          playerCar.moveRight(10)
+
                 # Press the back button
                 mouse = pygame.mouse.get_pos()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if 195 <= mouse[0] <= 345 and 500 <= mouse[1] <= 560:
                         carryOn = False
                         interface.interface()
+                        
                 # Pressing the play button
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if 445 <= mouse[0] <= 595 and 500 <= mouse[1] <= 560:
@@ -158,6 +161,7 @@ def car_racing():
                             pause = False
                         elif car_crash:
                             car_racing()
+                            
                 # Pressing the pause button
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if 725 <= mouse[0] <= 775 and 15 <= mouse[1] <= 65:
@@ -177,7 +181,8 @@ def car_racing():
                         else:
                             pause = True
                             print("Game Paused!")
-                
+                            
+                # Stop moving to the sides after the key is released
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_a or event.key == pygame.K_d:
                         playerCar.side_speed = 0
@@ -200,28 +205,6 @@ def car_racing():
             score_text = score_font.render(str(score_value), True, (255, 255, 255))
             screen.blit(score_text, (45, 32))
 
-            # Drawing the speed text
-            # speed_text = speed_font.render("Speed: " + str(math.floor(main.speed * 50)) + " km/h", True, (255, 255, 255))
-            # screen.blit(speed_text, (10, 40))
-
-            # Defining the position of the speedometer and calculating the angle for the pointer
-            speedometer_rect = speedometer.get_rect(center=(750, 550))
-            angle = playerCar.speed_to_angle(math.floor(main.speed * 50))
-
-            # Rotate the pointer around its base
-            rotated_pointer = pygame.transform.rotate(pointer, -angle)
-            pointer_rect = rotated_pointer.get_rect()
-
-            # The pivot should be the base of the needle on the speedometer
-            pivot = (speedometer.get_width() // 2, speedometer.get_height() // 2)
-
-            # Calculate the new center of the rotated pointer image
-            rotated_pointer_center = (pivot[0] - pointer_rect.width // 2, pivot[1] - pointer_rect.height // 2)
-
-            # Drawing the speedometer and the pointer
-            screen.blit(speedometer,speedometer_rect)
-            screen.blit(rotated_pointer,rotated_pointer_center)
-
             # Drawing the pause button
             screen.blit(pause_button, (725,15))
 
@@ -237,7 +220,7 @@ def car_racing():
                     playerCar.moveRight(8)
                 if (keys[pygame.K_UP] or keys[pygame.K_w]) and not car_crash:
                     # setting max speed (120kph) and not letting speed up if slowing power up
-                    if math.floor((main.speed + 0.03) * 50) <= 120 \
+                    if math.floor((main.speed + 0.03) * 50) <= 150 \
                         and not (main.active_power_up != None and main.active_power_up.typeWhenActivated == "slowing"):
                         main.speed += 0.03
                 if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not car_crash:
@@ -273,12 +256,12 @@ def car_racing():
                         print("Collision with powerup!")
                         powerUp.affectPlayer(playerCar)
                         powerUp.changeSpeed(random.randint(50, 70))
-                        powerUp.repaint(random.choice(powerUpTypes))
-                        powerUp.rect.y = random.randint(-1000, -100)
+                        powerUp.repaint(random.choice([pwrup for pwrup in powerUpTypes if pwrup != powerUp.type])) # Repaint to a different power up
+                        powerUp.rect.y = random.randint(-1500, -500)
                         powerUp.rect.x = random.choice(powerUpSpawnLocationsX)  # move to any of the spawn locations
 
 
-            # Game Logic
+            ''' Respawn cars '''
             if(not pause):
                 for car in all_coming_cars:
                     car.moveForward(main.speed)
@@ -289,30 +272,61 @@ def car_racing():
                         score_value += 1
             
             
-            # Power Ups
+            ''' Respawn power ups '''
             if(not pause):
                 for powerUp in all_power_ups:
                     powerUp.moveForward(main.speed)
                     if powerUp.rect.y > 3*SCREENHEIGHT:  # we are multiplying by 3 to spawn 3 times less powerups than cars
                         powerUp.changeSpeed(random.randint(50, 70))
-                        powerUp.repaint(random.choice(powerUpTypes))
-                        powerUp.rect.y = random.randint(-1000, -100)
+                        powerUp.repaint(random.choice([pwrup for pwrup in powerUpTypes if pwrup != powerUp.type])) # Repaint to a different power up
+                        powerUp.rect.y = random.randint(-1500, -500)
                         powerUp.rect.x = random.choice(powerUpSpawnLocationsX)  # move to any of the spawn locations
             
-            # Check if there is any active power up to deactivate
+            
+            ''' Power up logic '''
             if(not pause):
                 if main.active_power_up != None:
+                    # Display remaining power up time
+                    if (main.active_power_up.timeout - (pygame.time.get_ticks() - main.active_power_up.startTime)) > 0:
+                        powerUpTimer_background = pygame.image.load("assets/timer_background.png").convert_alpha()
+                        powerUpTimer_value = round((main.active_power_up.timeout - (pygame.time.get_ticks() - main.active_power_up.startTime)) / 1000, 1)
+                        powerUpTimer_font = pygame.font.SysFont('Corbel', 500, bold = True)
+                        powerUpTimer_text = score_font.render(str(powerUpTimer_value) + "s", True, (0,0,0))
+                        screen.blit(powerUpTimer_background, (0, 120 - (powerUpTimer_background.get_height() // 2)))
+                        screen.blit(powerUpTimer_text, ((powerUpTimer_background.get_width() // 2) - (powerUpTimer_text.get_width() // 2), 120 - (powerUpTimer_text.get_height() // 2) + 5))
+
+                    # Disable power up after the timeout
                     if pygame.time.get_ticks() - main.active_power_up.startTime >= main.active_power_up.timeout:
                         main.active_power_up.deactivate(playerCar)
             
             
-            
+            ''' Draw the sprites '''
             all_sprites_list.update()
-
-            # Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
+            # Now let's draw all the sprites in one go.
             all_sprites_list.draw(screen)
+            
+            
+            ''' Speedometer '''
+            # Defining the position of the speedometer and calculating the angle for the pointer
+            speedometer_rect = (630, 430, speedometer.get_rect().x, speedometer.get_rect().y)
+            angle = math.floor(main.speed * 50) # convert the speed
 
-            # Wait for key press to start
+            # Rotate the pointer around its base
+            rotated_pointer = pygame.transform.rotate(pointer, -angle)
+            pointer_rect = rotated_pointer.get_rect()
+
+            # The pivot should be the center of the speedometer
+            pivot = (speedometer_rect[0] + (speedometer.get_width() // 2), speedometer_rect[1] + (speedometer.get_height() // 2) + 2)
+
+            # Calculate the new center of the rotated pointer image
+            rotated_pointer_center = (pivot[0] - (pointer_rect.width // 2), pivot[1] - (pointer_rect.height // 2))
+
+            # Drawing the speedometer and the pointer
+            screen.blit(speedometer, speedometer_rect)
+            screen.blit(rotated_pointer, rotated_pointer_center)
+
+
+            ''' Wait for key press to start '''
             if(wait_for_key):
                 main.speed = 0
                 
@@ -329,7 +343,8 @@ def car_racing():
                         wait_for_key = False
                         main.speed = 1
 
-            # Pause menu
+
+            ''' Pause menu '''
             if(pause):
                 # Make the Game Paused text blink
                 msToChange = 500  # We set the amount of milliseconds that each frame stays
@@ -355,7 +370,8 @@ def car_racing():
                     interface.drawRhomboid(screen, RED, RED, 195, 500, 150, 60, 30, 5)
                 screen.blit(quit_text, (195 + 12.5 + (150 - quit_text.get_width())/2, 500 + 12.5))
             
-            # Game over menu
+            
+            ''' Game over menu '''
             if(car_crash):
                 # Stop the cars
                 main.speed = 0

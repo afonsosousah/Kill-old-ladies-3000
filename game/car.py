@@ -70,7 +70,9 @@ class Car(pygame.sprite.Sprite):
         self.speed = speed
 
     def repaint(self, isPlayer=False):
-        new_model = random.randint(1,6)
+        models = [1,2,3,4,5,6]
+        models.remove(self.model)
+        new_model = random.choice(models) # repaint to a different car
         
         if isPlayer:
             main.selected_car = new_model
@@ -85,7 +87,7 @@ class Car(pygame.sprite.Sprite):
         # Save the original image of the car to restore it later
         self.original_image = self.image
         # Load the "ghost" version of the car
-        self.image = pygame.image.load(f'assets/ghostcar{self.model}.png').convert_alpha()
+        self.image = pygame.image.load(f'assets/ghostcar{main.selected_car}.png').convert_alpha()
         if self.flip:
             self.image = pygame.transform.flip(self.image, True, True)
 
@@ -117,9 +119,5 @@ class Car(pygame.sprite.Sprite):
     
     def create_mask(self):
         return pygame.mask.from_surface(self.image)
-    
-    def speed_to_angle(self, speed):
-        # converting speed from 0 to 120 to an angle from 0 to 180 degrees
-        return (speed / 120) * 270
 
 

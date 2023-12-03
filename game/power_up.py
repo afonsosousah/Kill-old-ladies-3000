@@ -48,17 +48,18 @@ class Power_Up(pygame.sprite.Sprite):
         # Disable the previous power up before setting the new one
         if main.active_power_up:
             main.active_power_up.deactivate(player)
+        
             
-            
-        powerUpTypes = ("invincibility", "slowing", "repaint", "invisibility")
+        powerUpTypes = ("invincibility", "slowing", "repaint", "random", "invisibility")
         
         if self.type == "random":
             self.type = random.choice(powerUpTypes)
-        
         if self.type == "invincibility":
             player.invincible = True
+            player.image = pygame.image.load(f'assets/car_invincible.png')
         elif self.type == "slowing":
             main.speed = 0.2
+            player.image = pygame.image.load(f'assets/car_slowing.png')
         elif self.type == "repaint":
             player.repaint(isPlayer=True)
         elif self.type == "invisibility":
@@ -74,8 +75,10 @@ class Power_Up(pygame.sprite.Sprite):
         
         if self.typeWhenActivated == "invincibility":
             player.invincible = False
+            player.image = pygame.image.load(f'assets/car{main.selected_car}.png')
         elif self.typeWhenActivated == "slowing":
             main.speed = 1
+            player.image = pygame.image.load(f'assets/car{main.selected_car}.png')
         elif self.typeWhenActivated == "repaint":
             pass
         elif self.typeWhenActivated == "invisibility":

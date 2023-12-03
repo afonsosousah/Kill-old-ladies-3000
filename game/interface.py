@@ -43,6 +43,12 @@ def interface():
     credits_text = corbelfont.render('Credits', True, white)
     quit_text = corbelfont.render('Quit', True, white)
     
+    # Create the infinite scrolling background for the menu
+    MAP = pygame.image.load("assets/infinite_level.png").convert_alpha()
+    MAP = pygame.transform.scale_by(MAP, 0.9)
+    mapY0 = -200
+    mapY1 = -1280
+    
     # interface loop
     while True:
         # getting the input of the user
@@ -68,8 +74,21 @@ def interface():
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if 210 <= mouse[0] <= 210 + 300 and 320 <= mouse[1] <= 320 + 60:
                     multiplayer_racing()
-        # setting the background color as black
-        screen.fill(black)
+        
+        # Infinite scrolling map as background
+        screen.blit(MAP, [0, mapY0, 720, 1080])
+        screen.blit(MAP, [0, mapY1, 720, 1080])
+        if mapY0 > -300:
+            mapY1 = mapY0 - 1080
+        if mapY1 > -300:
+            mapY0 = mapY1 - 1080
+        # move the map 
+        mapY0 += 1
+        mapY1 += 1
+        
+        transparent_black = pygame.image.load('assets/empty.png')
+        transparent_black = pygame.transform.scale(transparent_black, (720, 720))
+        screen.blit(transparent_black, (0,0))
         
         # print the buttons text and the box(color changing)
         
