@@ -35,10 +35,9 @@ def multiplayer_racing():
 
     # creating map
     # Game background
-    global MAP_BORDER_MASK
     MAP = pygame.image.load("assets/infinite_level.png").convert_alpha()
     MAP_BORDER = pygame.image.load("assets/map_border.png")
-    MAP_BORDER_MASK = pygame.mask.from_surface(MAP_BORDER)
+    main.MAP_BORDER_MASK = pygame.mask.from_surface(MAP_BORDER)
     mapY0 = 0
     mapY1 = -1200
 
@@ -242,17 +241,17 @@ def multiplayer_racing():
             screen.blit(pause_button, (725,15))
 
             # Not letting the car go off the road
-            if playerCar1.collide(MAP_BORDER_MASK) != None:
+            if playerCar1.collide(main.MAP_BORDER_MASK) != None:
                 playerCar1.bounce()
-            if playerCar2.collide(MAP_BORDER_MASK) != None:
+            if playerCar2.collide(main.MAP_BORDER_MASK) != None:
                 playerCar1.bounce()
 
             if(not pause):
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_LEFT] and not car_crash:
-                    playerCar1.moveLeft(8)
+                    playerCar2.moveLeft(8)
                 if keys[pygame.K_RIGHT] and not car_crash:
-                    playerCar1.moveRight(8)
+                    playerCar2.moveRight(8)
                 if keys[pygame.K_UP] and not car_crash:
                     # setting max speed (120kph) and not letting speed up if slowing power up
                     if math.floor((main.speed + 0.03) * 50) <= 270 \

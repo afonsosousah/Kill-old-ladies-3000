@@ -33,10 +33,9 @@ def car_racing():
 
     # creating map
     # Game background
-    global MAP_BORDER_MASK
     MAP = pygame.image.load("assets/infinite_level.png").convert_alpha()
     MAP_BORDER = pygame.image.load("assets/map_border.png")
-    MAP_BORDER_MASK = pygame.mask.from_surface(MAP_BORDER)
+    main.MAP_BORDER_MASK = pygame.mask.from_surface(MAP_BORDER)
     mapY0 = 0
     mapY1 = -1200
 
@@ -227,7 +226,7 @@ def car_racing():
             screen.blit(pause_button, (725,15))
 
             # Not letting the car go off the road
-            if playerCar.collide(MAP_BORDER_MASK) != None:
+            if playerCar.collide(main.MAP_BORDER_MASK) != None:
                 playerCar.bounce()
 
             if(not pause):
