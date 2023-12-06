@@ -10,8 +10,6 @@ import math
 def multiplayer_racing():
     pygame.init()
 
-    main.selected_car = 1
-
     GREEN = (20, 255, 140)
     GREY = (210, 210 ,210)
     WHITE = (255, 255, 255)
@@ -86,7 +84,7 @@ def multiplayer_racing():
     playerCar1.rect.x = SCREENWIDTH/2 - 60
     playerCar1.rect.y = SCREENHEIGHT - 110
 
-    playerCar2 = Car(RED, 60, 80, 70, main.selected_car, False)
+    playerCar2 = Car(RED, 60, 80, 70, main.selected_car2, False)
     playerCar2.rect.x = SCREENWIDTH/2 + 60
     playerCar2.rect.y = SCREENHEIGHT - 110
 
@@ -283,11 +281,13 @@ def multiplayer_racing():
 
             # Create the player mask for the collisions
             player_car_mask = playerCar1.create_mask()
-            player_car_mask = playerCar2.create_mask()
+            player_car2_mask = playerCar2.create_mask()
 
             ''' Pixel perfect collision between player and cars '''
             for car in all_coming_cars:
                 coming_cars_masks = car.create_mask()
+
+                # Car 1
                 offset = (int(car.rect.x - playerCar1.rect.x), int(car.rect.y - playerCar1.rect.y))
                 collision_point = player_car_mask.overlap(coming_cars_masks, offset)
                 if collision_point and playerCar1.invincible:
@@ -297,6 +297,21 @@ def multiplayer_racing():
                     car.rect.y = random.randint(-1000, -100)
                     score_value += 1
                 elif collision_point and playerCar1.invisible:
+                    # Just go over the car
+                    score_value += 1
+                elif collision_point:
+                    car_crash = True
+                    print("Collision!")
+                # Car 2
+                offset = (int(car.rect.x - playerCar2.rect.x), int(car.rect.y - playerCar2.rect.y))
+                collision_point = player_car2_mask.overlap(coming_cars_masks, offset)
+                if collision_point and playerCar2.invincible:
+                    # Respawn the car and make it disappear
+                    car.changeSpeed(random.randint(50,100))
+                    car.repaint()
+                    car.rect.y = random.randint(-1000, -100)
+                    score_value += 1
+                elif collision_point and playerCar2.invisible:
                     # Just go over the car
                     score_value += 1
                 elif collision_point:

@@ -47,8 +47,7 @@ def car_racing():
     score_text = score_font.render("Score: " + str(score_value), True, (255, 255, 255))
 
     # Creating the high score
-    previous_score = 0
-    high_score = 0
+    
 
     # Creating the score and highscore for the game over menu
     score_font_gameover = pygame.font.SysFont('Corbel', 35, bold = True)
