@@ -46,6 +46,12 @@ def car_racing():
     score_font = pygame.font.SysFont('Corbel', 20, bold = True)
     score_text = score_font.render("Score: " + str(score_value), True, (255, 255, 255))
 
+    # Creating the score and highscore for the game over menu
+    score_background_gameover = pygame.image.load("assets/score_background_gameover.png").convert_alpha()
+    score_background_gameover = pygame.transform.scale(score_background_gameover, (150,81))
+    highscore_background = pygame.image.load("assets/highscore_background.png").convert_alpha()
+    highscore_background_gameover = pygame.transform.scale(highscore_background, (150,81))
+
     # Creating the speedometer
     speedometer = pygame.image.load("assets/speedometer.png").convert_alpha()
     speedometer = pygame.transform.scale(speedometer, (120, 120))
@@ -238,9 +244,9 @@ def car_racing():
 
             if(not pause):
                 keys = pygame.key.get_pressed()
-                if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and not car_crash:
+                if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and not car_crash and main.speed != 0:
                     playerCar.moveLeft(8)
-                if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and not car_crash:
+                if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and not car_crash and main.speed != 0:
                     playerCar.moveRight(8)
                 if (keys[pygame.K_UP] or keys[pygame.K_w]) and not car_crash:
                     # setting max speed (120kph) and not letting speed up if slowing power up
@@ -381,9 +387,11 @@ def car_racing():
 
 
             ''' Gasmeter '''
-            # Update fuel level and ensure doesn't go below 0
-            playerCar.fuel_level -= 0.0005 * main.speed  # make the fuel depend on the speed
-            playerCar.fuel_level = max(playerCar.fuel_level, 0)
+            if(not pause):
+                # Update fuel level and ensure doesn't go below 0
+                playerCar.fuel_level -= 0.0005 * main.speed  # make the fuel depend on the speed
+                playerCar.fuel_level = max(playerCar.fuel_level, 0)
+
 
             # Defining the position of the gasmeter and calculating the angle for the pointer
             gasmeter_rect = (20, 460, gasmeter.get_rect().x, gasmeter.get_rect().y)
@@ -484,6 +492,8 @@ def car_racing():
                 
                 # Show the Game Over art
                 screen.blit(pygame.image.load('assets/game_over.png'), [0, 0, SCREENWIDTH, SCREENHEIGHT])
+                screen.blit(score_background_gameover, (220, 325))
+                screen.blit(highscore_background_gameover, (450, 325))
                 
                 # Draw the buttons
                 mouse = pygame.mouse.get_pos()
