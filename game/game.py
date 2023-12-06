@@ -46,9 +46,15 @@ def car_racing():
     score_font = pygame.font.SysFont('Corbel', 20, bold = True)
     score_text = score_font.render("Score: " + str(score_value), True, (255, 255, 255))
 
+    # Creating the high score
+    previous_score = 0
+    high_score = 0
+
     # Creating the score and highscore for the game over menu
+    score_font_gameover = pygame.font.SysFont('Corbel', 35, bold = True)
     score_background_gameover = pygame.image.load("assets/score_background_gameover.png").convert_alpha()
     score_background_gameover = pygame.transform.scale(score_background_gameover, (150,81))
+
     highscore_background = pygame.image.load("assets/highscore_background.png").convert_alpha()
     highscore_background_gameover = pygame.transform.scale(highscore_background, (150,81))
 
@@ -320,6 +326,7 @@ def car_racing():
                         car.repaint()
                         car.rect.y = random.randint(-1000, -100)
                         score_value += 1
+                        gameover_score_value = score_value
             
             
             ''' Respawn power ups '''
@@ -491,8 +498,12 @@ def car_racing():
                 #pygame.mixer.music.stop()
                 
                 # Show the Game Over art
+                score_text_gameover = score_font_gameover.render(str(gameover_score_value), True, (255, 255, 255))
+
                 screen.blit(pygame.image.load('assets/game_over.png'), [0, 0, SCREENWIDTH, SCREENHEIGHT])
                 screen.blit(score_background_gameover, (220, 325))
+                screen.blit(score_text_gameover, (285, 362))
+                
                 screen.blit(highscore_background_gameover, (450, 325))
                 
                 # Draw the buttons
