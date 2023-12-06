@@ -33,10 +33,9 @@ def car_racing():
 
     # creating map
     # Game background
-    global MAP_BORDER_MASK
     MAP = pygame.image.load("assets/infinite_level.png").convert_alpha()
     MAP_BORDER = pygame.image.load("assets/map_border.png")
-    MAP_BORDER_MASK = pygame.mask.from_surface(MAP_BORDER)
+    main.MAP_BORDER_MASK = pygame.mask.from_surface(MAP_BORDER)
     mapY0 = 0
     mapY1 = -1200
 
@@ -151,6 +150,13 @@ def car_racing():
     # Set the initial fuel level (1.0 represents a full tank)
     playerCar.fuel_level = 1.0
 
+    # Initial settings for Low Fuel warning
+    low_fuel_threshold = 0.2
+    blinking_interval = 500
+    is_low_fuel = False
+    blink_visible = True
+    last_blink_time = pygame.time.get_ticks()
+
     # Play game soundtrack
     #pygame.mixer.music.load('assets/game_soundtrack.mp3')
     #pygame.mixer.music.play(-1)
@@ -227,7 +233,7 @@ def car_racing():
             screen.blit(pause_button, (725,15))
 
             # Not letting the car go off the road
-            if playerCar.collide(MAP_BORDER_MASK) != None:
+            if playerCar.collide(main.MAP_BORDER_MASK) != None:
                 playerCar.bounce()
 
             if(not pause):
@@ -381,7 +387,7 @@ def car_racing():
 
             # Defining the position of the gasmeter and calculating the angle for the pointer
             gasmeter_rect = (20, 460, gasmeter.get_rect().x, gasmeter.get_rect().y)
-            gas_angle = -270 * (1 - playerCar.fuel_level)
+            gas_angle = -282 * (1 - playerCar.fuel_level)
 
             # Rotate the pointer around its base
             rotated_gas_pointer = pygame.transform.rotate(gas_pointer, -gas_angle)
@@ -397,6 +403,32 @@ def car_racing():
             screen.blit(gasmeter, gasmeter_rect)
             screen.blit(rotated_gas_pointer, rotated_gas_pointer_center)
 
+            ''' Low Fuel Warning'''
+            # Load font for Low Fuel message
+            font = pygame.font.SysFont('Corbel', 25, bold = True) 
+            low_fuel_text = font.render('Low Fuel!', True, pygame.Color('RED'))
+            low_fuel_rect = low_fuel_text.get_rect(center=(80, 440))
+
+            # Update the Low Fuel state
+            if playerCar.fuel_level < low_fuel_threshold:
+                is_low_fuel = True
+            else:
+                is_low_fuel = False
+
+            # Blink Low Fuel message if the state is active
+            if is_low_fuel:
+                current_time = pygame.time.get_ticks()
+                if current_time - last_blink_time > blinking_interval:
+                    blink_visible = not blink_visible
+                    last_blink_time = current_time
+
+                if blink_visible:
+                    screen.blit(low_fuel_text, low_fuel_rect)
+
+            # Check if there is a collision with a fuel can
+            collision_point = player_car_mask.overlap(fuelCanMask, offset)
+            if collision_point:
+                is_low_fuel = False
 
             ''' Wait for key press to start '''
             if(wait_for_key):
@@ -444,7 +476,7 @@ def car_racing():
             
             
             ''' Game over menu '''
-            if(car_crash):
+            if(car_crash) or (playerCar.fuel_level == 0):
                 # Stop the cars
                 main.speed = 0
                 

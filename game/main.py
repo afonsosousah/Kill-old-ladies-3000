@@ -2,6 +2,7 @@ from interface import *
 global selected_car
 global speed
 global active_power_up
+global MAP_BORDER_MASK 
 
 def main():
     pygame.init()

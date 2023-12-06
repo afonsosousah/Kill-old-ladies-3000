@@ -48,7 +48,7 @@ class Car(pygame.sprite.Sprite):
         new_speed = self.side_speed + (pixels / 20)
         if new_speed <= 7 and new_speed >= -7:
             self.side_speed = new_speed
-        if not self.collide(game.MAP_BORDER_MASK, -self.side_speed):
+        if not self.collide(main.MAP_BORDER_MASK, -self.side_speed):
             self.rect.x += self.side_speed
         else:
             self.bounce()
@@ -57,7 +57,7 @@ class Car(pygame.sprite.Sprite):
         new_speed = self.side_speed - (pixels / 20)
         if new_speed <= 7 and new_speed >= -7:
             self.side_speed = new_speed
-        if not self.collide(game.MAP_BORDER_MASK, -self.side_speed):
+        if not self.collide(main.MAP_BORDER_MASK, -self.side_speed):
             self.rect.x += self.side_speed
         else:
             self.bounce()
