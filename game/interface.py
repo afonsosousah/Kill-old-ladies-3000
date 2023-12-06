@@ -32,8 +32,8 @@ def interface():
     height = screen.get_height()
     
     # creating title text label
-    comicsansfont = pygame.font.SysFont('Comic Sans MS', 50)
-    title_text = comicsansfont.render('Turbo Racing 3000', True, yellow)
+    #comicsansfont = pygame.font.SysFont('Comic Sans MS', 50)
+    #title_text = comicsansfont.render('Turbo Racing 3000', True, yellow)
     
     # creating buttons text labels
     corbelfont = pygame.font.SysFont('Corbel', 40, bold=True, italic=True)
@@ -87,9 +87,11 @@ def interface():
         mapY0 += 1
         mapY1 += 1
         
+        # Transparent black mid layer
         transparent_black = pygame.image.load('assets/empty.png')
         transparent_black = pygame.transform.scale(transparent_black, (720, 720))
         screen.blit(transparent_black, (0,0))
+        
         
         # print the buttons text and the box(color changing)
         
@@ -133,7 +135,12 @@ def interface():
         
         # TITLE TEXT
         # pygame.draw.rect(screen, color_dark, [52, 0, 612, 100])
-        screen.blit(title_text, ((720 - title_text.get_width())/2, 50))
+        #screen.blit(title_text, ((720 - title_text.get_width())/2, 50))
+        
+        # Display word art
+        title_wordart = pygame.image.load('assets/wordart.png')
+        title_wordart = pygame.transform.scale_by(title_wordart, 0.16)
+        screen.blit(title_wordart, (720/2 - title_wordart.get_width()/2, -70))
         
         # PYGAME BUILT IN FUCTION that updates the screen at every oteration of the loop
         pygame.display.update()
@@ -163,7 +170,8 @@ def credits_():
 
     width = screen.get_width()
     height = screen.get_height()
-    credits_background = pygame.image.load("assets/credits.png")
+    #credits_background = pygame.image.load("assets/credits.png")
+    
 
     # creating buttons text label
     corbelfont = pygame.font.SysFont('Corbel', 40, bold=True, italic=True)
@@ -173,6 +181,8 @@ def credits_():
     # line1_text = comicsansfont.render('Afonso Hermenegildo, 20221958', True, yellow)
     # line2_text = comicsansfont.render('Diogo Oliveira, 20221928', True, yellow)
     # line3_text = comicsansfont.render('Tomás Rodrigues, 20221956', True, yellow)
+    
+    gif_frame = 0
 
     while True:
         mouse = pygame.mouse.get_pos()
@@ -184,8 +194,18 @@ def credits_():
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if 75 <= mouse[0] <= 225 and 620 <= mouse[1] <= 680:
                     interface()
-                    
-        screen.blit(pygame.image.load('assets/credits.png'), [0, 0, width, height])
+        
+        # Show the frames of the credits gif
+        if gif_frame != 47:
+            screen.blit(pygame.image.load(f'assets/credits_gif_frames/frame_{gif_frame}.png'), (0,0))
+            gif_frame += 1
+        else:
+            screen.blit(pygame.image.load(f'assets/credits_gif_frames/frame_{gif_frame}.png'), (0,0))
+            gif_frame = 0
+            
+        pygame.time.delay(30)
+                                    
+        #screen.blit(pygame.image.load('assets/credits.png'), [0, 0, width, height])
 
         # credits text
         # screen.blit(line1_text, (0, 0))
@@ -197,6 +217,6 @@ def credits_():
             drawRhomboid(screen, red, white, 75, 620, 150, 60, 30, 5)
         else:
             drawRhomboid(screen, red, red, 75, 620, 150, 60, 30, 5)
-        screen.blit(back_text, (75 + 12.5 + (150 - back_text.get_width())/2, 620 + 12.5)) 
+        screen.blit(back_text, (75 + 12.5 + (150 - back_text.get_width())/2, 620 + 12.5))
 
         pygame.display.update()
