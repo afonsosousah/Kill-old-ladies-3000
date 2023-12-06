@@ -167,6 +167,18 @@ def car_racing():
     is_low_fuel = False
     blink_visible = True
     last_blink_time = pygame.time.get_ticks()
+    
+    # Set the filename where we store persistent variables
+    persistent_variables_filename = "persistent_variables.pk"
+    
+    # Initialize default dict
+    persistent_dict = { 'highscore': 0 }
+    
+    # Get persistent stored variables
+    with open(persistent_variables_filename, 'rb') as file:
+        for line in file:
+            persistent_dict = eval(line)
+            
 
     # Play game soundtrack
     #pygame.mixer.music.load('assets/game_soundtrack.mp3')
@@ -325,7 +337,6 @@ def car_racing():
                         car.repaint()
                         car.rect.y = random.randint(-1000, -100)
                         score_value += 1
-                        gameover_score_value = score_value
             
             
             ''' Respawn power ups '''
@@ -497,13 +508,24 @@ def car_racing():
                 #pygame.mixer.music.stop()
                 
                 # Show the Game Over art
-                score_text_gameover = score_font_gameover.render(str(gameover_score_value), True, (255, 255, 255))
-
                 screen.blit(pygame.image.load('assets/game_over.png'), [0, 0, SCREENWIDTH, SCREENHEIGHT])
+                
+                # Show final score
+                score_text_gameover = score_font_gameover.render(str(score_value), True, (255, 255, 255))
                 screen.blit(score_background_gameover, (220, 325))
                 screen.blit(score_text_gameover, (285, 362))
                 
+                # Show the highscore
                 screen.blit(highscore_background_gameover, (450, 325))
+                # Get the stored highscore
+                if score_value > persistent_dict['highscore']:
+                    persistent_dict['highscore'] = score_value
+                    # Store the updated value
+                    with open(persistent_variables_filename, "w") as file:
+                        file.write(str(persistent_dict))
+                    
+                highscore_text_gameover = score_font_gameover.render(str(persistent_dict['highscore']), True, (255, 255, 255))
+                screen.blit(highscore_text_gameover, (505, 362))
                 
                 # Draw the buttons
                 mouse = pygame.mouse.get_pos()
