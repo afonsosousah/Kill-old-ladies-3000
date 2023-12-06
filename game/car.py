@@ -72,16 +72,30 @@ class Car(pygame.sprite.Sprite):
         self.speed = speed
 
     def repaint(self, isPlayer=False):
-        models = [1,2,3,4,5,6]
-        models.remove(self.model)
-        new_model = random.choice(models) # repaint to a different car
+        models = [1, 2, 3, 4, 5, 6]
+        if not isPlayer:
+            # Remove the player's car model from the list of all coming car potential models
+            if main.selected_car in models:
+                models.remove(main.selected_car)
         
+        # Remove the current model to ensure the car is repainted to a different model
+        if self.model in models:
+            models.remove(self.model)
+    
+        # Choose a new model from the remaining models
+        new_model = random.choice(models)
+    
+        # If the car is the player's car, update main.selected_car
         if isPlayer:
             main.selected_car = new_model
-        
+
+        # Load the new car image and apply flip if necessary
         self.image = pygame.image.load(f"assets/car{new_model}.png").convert_alpha()
         if self.flip:
             self.image = pygame.transform.flip(self.image, True, True)
+    
+        # Update the car's model attribute to the new model
+        self.model = new_model
 
     def setInvisible(self):
         # Make the car not collide

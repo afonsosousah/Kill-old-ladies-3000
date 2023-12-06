@@ -87,7 +87,14 @@ def car_racing():
 
     #This will be a list that will contain all the sprites we intend to use in our game.
     all_sprites_list = pygame.sprite.Group()
-    
+
+    # List of available car indexes
+    car_models = [1, 2, 3, 4, 5, 6]
+
+    # Remove the selected car from the list
+    if main.selected_car in car_models:
+        car_models.remove(main.selected_car)
+
     # Define where the enemies spawn
     carSpawnLocationsX = (195, 315, 435, 555) # spawn in each lane of the map
 
@@ -95,19 +102,19 @@ def car_racing():
     playerCar.rect.x = SCREENWIDTH/2 - 60/2
     playerCar.rect.y = SCREENHEIGHT - 110
 
-    car1 = Car(PURPLE, 60, 80, random.randint(50,100), random.randint(1,6))
+    car1 = Car(PURPLE, 60, 80, random.randint(50,100), random.choice(car_models))
     car1.rect.x = carSpawnLocationsX[0]
     car1.rect.y = -100
 
-    car2 = Car(YELLOW, 60, 80, random.randint(50,100), random.randint(1,6))
+    car2 = Car(YELLOW, 60, 80, random.randint(50,100), random.choice(car_models))
     car2.rect.x = carSpawnLocationsX[1]
     car2.rect.y = -600
 
-    car3 = Car(CYAN, 60, 80, random.randint(50,100), random.randint(1,6))
+    car3 = Car(CYAN, 60, 80, random.randint(50,100), random.choice(car_models))
     car3.rect.x = carSpawnLocationsX[2]
     car3.rect.y = -300
 
-    car4 = Car(BLUE, 60, 80, random.randint(50,100), random.randint(1,6))
+    car4 = Car(BLUE, 60, 80, random.randint(50,100), random.choice(car_models))
     car4.rect.x = carSpawnLocationsX[3]
     car4.rect.y = -1000
     
