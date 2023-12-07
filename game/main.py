@@ -2,7 +2,6 @@ from interface import *
 global selected_car
 global selected_car2
 global speed
-global active_power_up
 global MAP_BORDER_MASK 
 
 def main():

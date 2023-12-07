@@ -7,7 +7,7 @@ WHITE = (255, 255, 255)
 class Car(pygame.sprite.Sprite):
     #This class represents a car. It derives from the "Sprite" class in Pygame.
 
-    def __init__(self, color, width, height, speed, model, flip=True):
+    def __init__(self, width, height, speed, model, flip=True):
         # Call the parent class (Sprite) constructor
         super().__init__()
 
@@ -17,13 +17,11 @@ class Car(pygame.sprite.Sprite):
         self.image = pygame.image.load(f"assets/car{model}.png").convert_alpha()
         if flip:
             self.image = pygame.transform.flip(self.image, True, True)
-        #self.image.fill(WHITE)
-        self.image.set_colorkey(WHITE)
+        self.original_image = self.image
 
         #Initialise attributes of the car.
         self.width = width
         self.height = height
-        self.color = color
         self.speed = speed
         self.side_speed = 0
         self.flip = flip
@@ -32,7 +30,10 @@ class Car(pygame.sprite.Sprite):
         
         # Power up atributes
         self.invincible = False
+        self.slowing = False
         self.invisible = False
+        self.affected = False
+        self.activePowerUp = None
 
         # Draw the car (a rectangle!)
             #pygame.draw.rect(self.image, self.color, [0, 0, self.width, self.height])
@@ -84,10 +85,19 @@ class Car(pygame.sprite.Sprite):
     
         # Choose a new model from the remaining models
         new_model = random.choice(models)
+
+        # Load the new car image and apply flip if necessary
+        self.image = pygame.image.load(f"assets/car{new_model}.png").convert_alpha()
+        if self.flip:
+            self.image = pygame.transform.flip(self.image, True, True)
     
-        # If the car is the player's car, update main.selected_car
-        if isPlayer:
-            main.selected_car = new_model
+        # Update the car's model attribute to the new model
+        self.model = new_model
+        
+    # Is used to repaint the player car back to default when repaint powerup ends
+    def repaintOriginal(self):
+        # The new model is the original one
+        new_model = main.selected_car
 
         # Load the new car image and apply flip if necessary
         self.image = pygame.image.load(f"assets/car{new_model}.png").convert_alpha()

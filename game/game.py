@@ -1,11 +1,12 @@
 import pygame, random
 # Let's import the Car class and the Map class
 from car import Car
-from power_up import PowerUp
+from power_up import Invincibility, Slowing, Repaint, Invisibility
 from fuel_can import FuelCan
 import main
 import interface
 import math
+import copy
 
 def car_racing():
     pygame.init()
@@ -98,23 +99,23 @@ def car_racing():
     # Define where the enemies spawn
     carSpawnLocationsX = (195, 315, 435, 555) # spawn in each lane of the map
 
-    playerCar = Car(RED, 60, 80, 70, main.selected_car, False)
+    playerCar = Car(60, 80, 70, main.selected_car, False)
     playerCar.rect.x = SCREENWIDTH/2 - 60/2
     playerCar.rect.y = SCREENHEIGHT - 110
 
-    car1 = Car(PURPLE, 60, 80, random.randint(50,100), random.choice(car_models))
+    car1 = Car(60, 80, random.randint(50,100), random.choice(car_models))
     car1.rect.x = carSpawnLocationsX[0]
     car1.rect.y = -100
 
-    car2 = Car(YELLOW, 60, 80, random.randint(50,100), random.choice(car_models))
+    car2 = Car(60, 80, random.randint(50,100), random.choice(car_models))
     car2.rect.x = carSpawnLocationsX[1]
     car2.rect.y = -600
 
-    car3 = Car(CYAN, 60, 80, random.randint(50,100), random.choice(car_models))
+    car3 = Car(60, 80, random.randint(50,100), random.choice(car_models))
     car3.rect.x = carSpawnLocationsX[2]
     car3.rect.y = -300
 
-    car4 = Car(BLUE, 60, 80, random.randint(50,100), random.choice(car_models))
+    car4 = Car(60, 80, random.randint(50,100), random.choice(car_models))
     car4.rect.x = carSpawnLocationsX[3]
     car4.rect.y = -1000
     
@@ -138,18 +139,28 @@ def car_racing():
     # Define where the power ups spawn
     powerUpSpawnLocationsX = (250, 390, 500)  # spawn in the middle of the lanes
     
-    # Define what are the available types of power ups
-    powerUpTypes = ("invincibility", "slowing", "repaint", "random", "invisibility")
+    # Define what are the available types of power ups, and their weights
+    powerUpTypes = [Invincibility, Slowing, Repaint, Invisibility]
+    powerUpWeights = [15, 25, 20, 10]
+    #powerUpTypes = ("invincibility", "slowing", "repaint", "random", "invisibility")
     
     # Creating the Power Ups
-    powerUp1 = PowerUp(random.choice(powerUpTypes), random.randint(50,100))
+    powerUp1 = random.choices(powerUpTypes, powerUpWeights)[0](random.randint(50, 70))  # Select a PowerUp based on the weights 
     powerUp1.rect.x = random.choice(powerUpSpawnLocationsX)
     powerUp1.rect.y = -300
     
+    powerUp2 = random.choices(powerUpTypes, powerUpWeights)[0](random.randint(50, 70))  # Select a PowerUp based on the weights 
+    powerUp2.rect.x = random.choice(powerUpSpawnLocationsX)
+    powerUp2.rect.y = -2000
+
+    powerUp3 = random.choices(powerUpTypes, powerUpWeights)[0](random.randint(50, 70))  # Select a PowerUp based on the weights 
+    powerUp3.rect.x = random.choice(powerUpSpawnLocationsX)
+    powerUp3.rect.y = -3000
+    
     # Create a list of all Power Ups
     all_power_ups = pygame.sprite.Group()
-    all_power_ups.add(powerUp1)
-    all_sprites_list.add(powerUp1)
+    all_power_ups.add(powerUp1, powerUp2, powerUp3)
+    all_sprites_list.add(powerUp1, powerUp2, powerUp3)
     
     
     # Creating the Fuel Can
@@ -200,6 +211,12 @@ def car_racing():
                 elif event.type==pygame.KEYDOWN:
                     if event.key==pygame.K_x:
                          playerCar.moveRight(10)
+                
+                # Handle timeout of events   
+                elif event.type==pygame.USEREVENT:
+                    if playerCar.activePowerUp:
+                        playerCar.activePowerUp.deactivate(playerCar)
+
 
                 # Press the back button
                 mouse = pygame.mouse.get_pos()
@@ -219,22 +236,18 @@ def car_racing():
                 # Pressing the pause button
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if 725 <= mouse[0] <= 775 and 15 <= mouse[1] <= 65:
-                        # Using the pause button to pause and resume the game (while we don't have the pause menu)
-                        # if pause:
-                            # pause = False
-                            # print("Game Resumed!") 
-                        # else:
-                            pause = True
-                            print("Game Paused!")
+                        pause = True
+                        print("Game Paused!")
                 elif event.type==pygame.KEYDOWN:
                     if event.key==pygame.K_ESCAPE:
-                        # You can pause and resume the game by pressing 'esc'
-                        if pause:
-                            pause = False
-                            print("Game Resumed!") 
-                        else:
-                            pause = True
-                            print("Game Paused!")
+                        if not car_crash:
+                            # You can pause and resume the game by pressing 'esc'
+                            if pause:
+                                pause = False
+                                print("Game Resumed!") 
+                            else:
+                                pause = True
+                                print("Game Paused!")
                             
                 # Stop moving to the sides after the key is released
                 if event.type == pygame.KEYUP:
@@ -275,12 +288,12 @@ def car_racing():
                 if (keys[pygame.K_UP] or keys[pygame.K_w]) and not car_crash:
                     # setting max speed (120kph) and not letting speed up if slowing power up
                     if math.floor((main.speed + 0.03) * 50) <= 270 \
-                        and not (main.active_power_up != None and main.active_power_up.typeWhenActivated == "slowing"):
+                        and not playerCar.slowing:
                         main.speed += 0.03
                 if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not car_crash:
                     # setting min speed (50kph) and not letting speed down if slowing power up
                     if math.floor((main.speed - 0.05) * 50) >= 30 \
-                        and not(main.active_power_up != None and main.active_power_up.typeWhenActivated == "slowing"):
+                        and not playerCar.slowing:
                         main.speed -= 0.05
 
 
@@ -314,11 +327,19 @@ def car_racing():
                     collision_point = player_car_mask.overlap(powerUpMask, offset)
                     if collision_point:
                         print("Collision with powerup!")
+                        
+                        # Deactivate the previous power up before activating new one
+                        if playerCar.activePowerUp:
+                            playerCar.activePowerUp.deactivate(playerCar)
+                        
+                        # Affect the player
                         powerUp.affectPlayer(playerCar)
-                        powerUp.changeSpeed(random.randint(50, 70))
-                        powerUp.repaint(random.choice([pwrup for pwrup in powerUpTypes if pwrup != powerUp.type])) # Repaint to a different power up
-                        powerUp.rect.y = random.randint(-1500, -500)
-                        powerUp.rect.x = random.choice(powerUpSpawnLocationsX)  # move to any of the spawn locations
+                        powerUp.startTime = pygame.time.get_ticks()
+                        playerCar.activePowerUp = powerUp
+                        playerCar.affected = True
+                        
+                        # Hide the power up
+                        powerUp.rect.y = -9999
 
 
             ''' Pixel perfect collision between player and fuel cans '''
@@ -352,7 +373,7 @@ def car_racing():
                     powerUp.moveForward(main.speed)
                     if powerUp.rect.y > 3*SCREENHEIGHT:  # we are multiplying by 3 to spawn 3 times less powerups than cars
                         powerUp.changeSpeed(random.randint(50, 70))
-                        powerUp.repaint(random.choice([pwrup for pwrup in powerUpTypes if pwrup != powerUp.type])) # Repaint to a different power up
+                        powerUp.repaint() # Repaint to a different power up
                         powerUp.rect.y = random.randint(-1500, -500)
                         powerUp.rect.x = random.choice(powerUpSpawnLocationsX)  # move to any of the spawn locations
                         
@@ -366,22 +387,17 @@ def car_racing():
                     fuel_can.rect.x = random.choice([loc for loc in powerUpSpawnLocationsX if loc != fuel_can.rect.x])
             
             
-            ''' Power up logic '''
-            if(not pause):
-                if main.active_power_up != None:
-                    # Display remaining power up time
-                    if ((main.active_power_up.timeout - (pygame.time.get_ticks() - main.active_power_up.startTime)) > 0 and
-                        main.active_power_up.typeWhenActivated != "repaint"):
-                        powerUpTimer_background = pygame.image.load("assets/timer_background.png").convert_alpha()
-                        powerUpTimer_value = round((main.active_power_up.timeout - (pygame.time.get_ticks() - main.active_power_up.startTime)) / 1000, 1)
-                        powerUpTimer_font = pygame.font.SysFont('Corbel', 23, bold = True)
-                        powerUpTimer_text = powerUpTimer_font.render(str(powerUpTimer_value) + "s", True, (0,0,0))
-                        screen.blit(powerUpTimer_background, (0, 120 - (powerUpTimer_background.get_height() // 2)))
-                        screen.blit(powerUpTimer_text, ((powerUpTimer_background.get_width() // 2) - (powerUpTimer_text.get_width() // 2), 120 - (powerUpTimer_text.get_height() // 2) + 5))
-
-                    # Disable power up after the timeout
-                    if pygame.time.get_ticks() - main.active_power_up.startTime >= main.active_power_up.timeout:
-                        main.active_power_up.deactivate(playerCar)
+            ''' Display power up timer '''
+            if playerCar.affected and not pause:
+                # Display remaining power up time
+                remainingTime = playerCar.activePowerUp.timeout - (pygame.time.get_ticks() - playerCar.activePowerUp.startTime)
+                if remainingTime > 0:
+                    powerUpTimer_background = pygame.image.load("assets/timer_background.png").convert_alpha()
+                    powerUpTimer_value = round(remainingTime / 1000, 1)
+                    powerUpTimer_font = pygame.font.SysFont('Corbel', 23, bold = True)
+                    powerUpTimer_text = powerUpTimer_font.render(str(powerUpTimer_value) + "s", True, (0,0,0))
+                    screen.blit(powerUpTimer_background, (0, 120 - (powerUpTimer_background.get_height() // 2)))
+                    screen.blit(powerUpTimer_text, ((powerUpTimer_background.get_width() // 2) - (powerUpTimer_text.get_width() // 2), 120 - (powerUpTimer_text.get_height() // 2) + 5))
             
             
             ''' Draw the sprites '''
