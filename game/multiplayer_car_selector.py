@@ -19,13 +19,10 @@ def multiplayer_car_selector():
     
     # creatinbg some colors (RGB scale)
     white = (255, 255, 255)
-    yellow = (253, 199, 79)
+    yellow = (253, 210, 48)
     red = (255, 0, 0)
-    green = (110, 218, 44)
-    blue = (0, 0, 255)
     color_light = (170, 170, 170)
-    color_dark = (100, 100, 100)
-    black = (0, 0, 0)
+
     
     # saving the screen sizes
     width = screen.get_width()
@@ -36,9 +33,9 @@ def multiplayer_car_selector():
     title_text = comicsansfont.render('Turbo Racing 3000', True, yellow)
     
     # creating buttons text labels
-    corbelfont = pygame.font.SysFont('Corbel', 40, bold=True, italic=True)
-    play_text = corbelfont.render('Play', True, white)
-    back_text = corbelfont.render('Back', True, white)
+    font = pygame.font.Font('fonts/MASQUE__.ttf', 28)
+    play_text = font.render('Play', True, white)
+    back_text = font.render('Back', True, white)
     
     # Allowing the user to close the window...
     carryOn = True
