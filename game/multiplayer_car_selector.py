@@ -46,7 +46,7 @@ def multiplayer_car_selector():
 
     # store the selected car
     main.selected_car = 1
-    main.selected_car2 = 1
+    main.selected_car2 = 2
 
     # Create the infinite scrolling background for the menu
     MAP = pygame.image.load("assets/infinite_level.png").convert_alpha()
@@ -74,31 +74,55 @@ def multiplayer_car_selector():
             # pressing the next car button1
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if 276 <= mouse[0] <= 341 and 250 <= mouse[1] <= 330:
-                    if main.selected_car + 1 <= 6:
-                        main.selected_car += 1
-                    else:
-                        main.selected_car = 1
+                    if main.selected_car + 1 != main.selected_car2: # Don't let both players choose the same car
+                        if main.selected_car + 1 <= 6:
+                            main.selected_car += 1
+                        else:
+                            main.selected_car = 1
+                    else: # If the car would be the same, skip to the next one
+                        if main.selected_car + 2 <= 6:
+                            main.selected_car += 2
+                        else:
+                            main.selected_car = 1
             # pressing the previous car button1
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if 57 <= mouse[0] <= 122 and 250 <= mouse[1] <= 330:
-                    if main.selected_car - 1 >= 1:
-                        main.selected_car -= 1
-                    else:
-                        main.selected_car = 6
+                    if main.selected_car - 1 != main.selected_car2: # Don't let both players choose the same car
+                        if main.selected_car - 1 >= 1:
+                            main.selected_car -= 1
+                        else:
+                            main.selected_car = 6
+                    else: # If the car would be the same, skip to the next one
+                        if main.selected_car - 2 >= 1:
+                            main.selected_car -= 2
+                        else:
+                            main.selected_car = 6
             # pressing the next car button2
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if 591 <= mouse[0] <= 656 and 250 <= mouse[1] <= 330:
-                    if main.selected_car2 + 1 <= 6:
-                        main.selected_car2 += 1
-                    else:
-                        main.selected_car2 = 1
+                    if main.selected_car2 + 1 != main.selected_car: # Don't let both players choose the same car
+                        if main.selected_car2 + 1 <= 6:
+                            main.selected_car2 += 1
+                        else:
+                            main.selected_car2 = 1
+                    else: # If the car would be the same, skip to the next one
+                        if main.selected_car2 + 2 <= 6:
+                            main.selected_car2 += 2
+                        else:
+                            main.selected_car2 = 1
             # pressing the previous car button2
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if 386 <= mouse[0] <= 451 and 250 <= mouse[1] <= 330:
-                    if main.selected_car2 - 1 >= 1:
-                        main.selected_car2 -= 1
-                    else:
-                        main.selected_car2 = 6
+                    if main.selected_car2 - 1 != main.selected_car: # Don't let both players choose the same car
+                        if main.selected_car2 - 1 >= 1:
+                            main.selected_car2 -= 1
+                        else:
+                            main.selected_car2 = 6
+                    else: # If the car would be the same, skip to the next one
+                        if main.selected_car2 - 2 >= 1:
+                            main.selected_car2 -= 2
+                        else:
+                            main.selected_car2 = 6
                         
         # Infinite scrolling map as background
         screen.blit(MAP, [0, mapY0, 720, 1080])

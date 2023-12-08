@@ -6,7 +6,6 @@ from fuel_can import FuelCan
 import main
 import interface
 import math
-import copy
 
 def car_racing():
     pygame.init()
@@ -451,6 +450,7 @@ def car_racing():
             screen.blit(gasmeter, gasmeter_rect)
             screen.blit(rotated_gas_pointer, rotated_gas_pointer_center)
 
+
             ''' Low Fuel Warning'''
             # Load font for Low Fuel message
             font = pygame.font.SysFont('Corbel', 25, bold = True) 
@@ -477,6 +477,7 @@ def car_racing():
             collision_point = player_car_mask.overlap(fuelCanMask, offset)
             if collision_point:
                 is_low_fuel = False
+
 
             ''' Wait for key press to start '''
             if(wait_for_key):
