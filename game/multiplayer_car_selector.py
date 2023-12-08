@@ -1,12 +1,26 @@
 import pygame
 import pygame.gfxdraw
-import sys
 from multiplayer_game import multiplayer_racing
 import interface
 import main
 
-# Creating a function that creates the GUI
 def multiplayer_car_selector():
+    """Multiplayer Car Selection Interface
+
+    This function presents a car selection interface for the Turbo Racing 3000 game in multiplayer mode.
+    It allows players to choose their desired cars for the race.
+    Once the cars are selected, the function transitions to the multiplayer racing loop.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    None
+
+    """
+    
     # initiating pygames
     pygame.init()
     

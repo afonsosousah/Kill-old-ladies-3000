@@ -1,19 +1,69 @@
 import pygame, random
-import game
 import main
 
 WHITE = (255, 255, 255)
 
 class Car(pygame.sprite.Sprite):
-    #This class represents a car. It derives from the "Sprite" class in Pygame.
+    """
+    Car Class
+
+    This class represents a car in the Turbo Racing 3000 game.
+    It derives from the Sprite class from pygame.
+    It handles aspects like movement, collision detection, power-ups, and fuel level.
+
+    Attributes:
+    ----------
+    width: int
+        Width of the car image.
+    height: int
+        Height of the car image.
+    speed: int
+        The speed at which the car moves along the track.
+    side_speed: int
+        The horizontal speed of the car, controlling its movement left and right.
+    flip: bool
+        Whether the car should be flipped horizontally (for right-handed/left-handed mode).
+    model: int
+        Index of the car model, ranging from 1 to 6.
+    fuel_level: float
+        Current fuel level of the car, ranging from 0.0 to 1.0.
+
+    Methods:
+    -------
+    moveRight(pixels):
+        Moves the car to the right by the specified number of pixels.
+    moveLeft(pixels):
+        Moves the car to the left by the specified number of pixels.
+    moveForward(speed):
+        Moves the car forward along the track by the specified speed.
+    moveBackward(speed):
+        Moves the car backward along the track by the specified speed.
+    changeSpeed(speed):
+        Changes the car's overall movement speed to the specified value.
+    repaint(isPlayer=False):
+        Repaints the car's image to a random model, except for the player's car.
+    repaintOriginal(player):
+        Repaints the player's car back to its original model after the repaint powerup ends.
+    setInvisible():
+        Makes the car invisible and loads a ghost image.
+    setVisible():
+        Makes the car visible again and loads its original image.
+    collide(mask, x=0, y=0):
+        Checks for collision between the car and the specified mask.
+    bounce():
+        Handles bouncing off the track boundaries.
+    create_mask():
+        Returns a Pygame mask object for collision detection.
+    refuel():
+        Increases the car's fuel level by 0.5, up to a maximum of 1.0.
+
+    """
 
     def __init__(self, width, height, speed, model, flip=True):
         # Call the parent class (Sprite) constructor
         super().__init__()
 
-        # Pass in the color of the car, and its x and y position, width and height.
-        # Set the background color and set it to be transparent
-        #self.image = pygame.Surface([width, height])
+        # Set the image of the car
         self.image = pygame.image.load(f"assets/car{model}.png").convert_alpha()
         if flip:
             self.image = pygame.transform.flip(self.image, True, True)
@@ -37,13 +87,6 @@ class Car(pygame.sprite.Sprite):
         self.original_speed = speed
         self.original_image = self.image
         self.original_model = model
-
-        # Draw the car (a rectangle!)
-            #pygame.draw.rect(self.image, self.color, [0, 0, self.width, self.height])
-        
-
-        # Instead we could load a proper picture of a car...
-        # self.image = pygame.image.load("car.png").convert_alpha()
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()

@@ -1,11 +1,30 @@
-import random
 import pygame
-import main
 
 class FuelCan(pygame.sprite.Sprite):
-    # This class represents a Fuel Can
-    # A player can “catch” a Fuel Can by hitting it with the car. 
-    # Catching a “Fuel Can” will add fuel to the car, allowing the user to play for more time.
+    """
+    Fuel Can Class
+
+    This class represents a Fuel Can in the Turbo Racing 3000 game.
+    It derives from the Sprite class from pygame.
+    The fuel can is an object that the player can collect to replenish their car's fuel. 
+    When the player collides with a fuel can, their car's fuel level increases, allowing them to race for a longer duration.
+
+    Attributes:
+    ----------
+    speed: int
+        The speed at which the Fuel Can moves along the track.
+
+    Methods:
+    -------
+    moveForward(speed):
+        Moves the Fuel Can forward by the specified speed.
+    moveBackward(speed):
+        Moves the Fuel Can backward by the specified speed.
+    changeSpeed(speed):
+        Changes the Fuel Can's movement speed to the specified value.
+    create_mask():
+        Returns a Pygame mask object for collision detection.
+    """
     
     def __init__(self, speed):
         # Call the parent class (Sprite) constructor

@@ -7,9 +7,47 @@ WHITE = (255, 255, 255)
 powerUpKeys = {}
 
 class PowerUp(pygame.sprite.Sprite):
-    # This class represents a Power-Up
-    # A Power-Up is something a player can “catch” by hitting it with the car. 
-    # Catching a “Power-up” will affect the game in some way for a temporary amount of time.
+    """
+    Power-Up Class
+
+    This class represents a Power-Up object in the Turbo Racing 3000 game.
+    It derives from the Sprite class from pygame.
+    A Power-Up is a collectible item that players can collect by colliding with it.
+    Different types of power-ups have varying effects on the game, 
+    such as increasing player speed, reducing enemy speed, or making the player temporarily invincible.
+
+    Attributes:
+    ----------
+    width: int
+        The width of the Power-Up sprite.
+    height: int
+        The height of the Power-Up sprite.
+    speed: int
+        The speed at which the Power-Up moves along the track.
+    startTime: float
+        Timestamp of when the Power-Up was activated.
+    timeout: int
+        Duration for which the Power-Up's effects last.
+
+    Methods:
+    -------
+    affectPlayer(player):
+        Applies the Power-Up's effect to the specified player.
+    deactivate(player):
+        Removes the Power-Up's effect from the specified player.
+    moveForward(speed):
+        Moves the Power-Up forward by the specified speed.
+    moveBackward(speed):
+        Moves the Power-Up backward by the specified speed.
+    changeSpeed(speed):
+        Changes the Power-Up's movement speed to the specified value.
+    repaint():
+        Creates a new Power-Up object with a random type and respawns it.
+    create_mask():
+        Returns a Pygame mask object for collision detection.
+
+    """
+    
     
     # The available types of power-ups are: Invincibility, Slowing, Repaint, Invisibility and Random
     def __init__(self, speed, timeout = 3000):
@@ -24,9 +62,6 @@ class PowerUp(pygame.sprite.Sprite):
         
         self.startTime = None  # property to use for the timeout of the powerup
         self.timeout = timeout  # 3 seconds timeout default
-        #self.typeWhenActivated = None  # store what was the type when the power up was last activated
-        # we need to do this because the powerup will be reused after colliding with the player
-        # and its type can change
     
     # Function that is called when the player catches a power up
     def affectPlayer(self, player):
@@ -75,6 +110,28 @@ class PowerUp(pygame.sprite.Sprite):
 
 
 class Invincibility(PowerUp):
+    """
+    Invincibility Power-Up Class
+
+    This child class of the `PowerUp` class represents the invincibility power-up in the Turbo Racing 3000 game.
+
+    The invincibility power-up makes the player car invulnerable to collisions with other cars or obstacles for a short duration.
+
+    Attributes:
+    ----------
+    speed: int
+        The speed at which the Power-Up moves along the track.
+    timeout: int
+        Duration for which the Power-Up's effects last.
+
+    Methods:
+    -------
+    affectPlayer(player):
+        Applies the invincibility effect to the specified player.
+    deactivate(player):
+        Removes the invincibility effect from the specified player.
+
+    """
     
     def __init__(self, speed, timeout=3000):
         super().__init__(speed, timeout)
@@ -95,10 +152,31 @@ class Invincibility(PowerUp):
         super().deactivate(player)  # Repaint the power up
         player.invincible = False
         player.image = pygame.image.load(f'assets/car{player.original_model}.png')
-        
+
 
 class Slowing(PowerUp):
-    
+    """
+    Slowing Power-Up Class
+
+    This child class of the `PowerUp` class represents the slowing power-up in the Turbo Racing 3000 game.
+    It slows down all cars, including the player's car, for a brief period.
+
+    Attributes:
+    ----------
+    speed: int
+        The speed at which the Power-Up moves along the track.
+    timeout: int
+        Duration for which the Power-Up's effects last.
+
+    Methods:
+    -------
+    affectPlayer(player):
+        Slows down all cars.
+    deactivate(player):
+        Reverts all cars' speed and image to original state.
+
+    """
+
     def __init__(self, speed, timeout=3000):
         super().__init__(speed, timeout)
         self.original_speed = 1
@@ -127,6 +205,27 @@ class Slowing(PowerUp):
         
         
 class Repaint(PowerUp):
+    """
+    Repaint Power-Up Class
+
+    This child class of the `PowerUp` class represents the repaint power-up in the Turbo Racing 3000 game.
+    The repaint power-up changes the appearance of all the cars on the track, including the player's car, for a short duration.
+
+    Attributes:
+    ----------
+    speed: int
+        The speed at which the Power-Up moves along the track.
+    timeout: int
+        Duration for which the Power-Up's effects last.
+
+    Methods:
+    -------
+    affectPlayer(player):
+        Changes the appearance of all cars.
+    deactivate(player):
+        Reverts all cars' appearance to original state.
+
+    """
     
     def __init__(self, speed, timeout=3000):
         super().__init__(speed, timeout)
@@ -147,6 +246,27 @@ class Repaint(PowerUp):
     
 
 class Invisibility(PowerUp):
+    """
+    Invisibility Power-Up Class
+
+    This child class of the `PowerUp` class represents the invisibility power-up in the Turbo Racing 3000 game.
+    The invisibility power-up makes the player car temporarily invisible to other cars and obstacles, making it harder to be hit.
+
+    Attributes:
+    ----------
+    speed: int
+        The speed at which the Power-Up moves along the track.
+    timeout: int
+        Duration for which the Power-Up's effects last.
+
+    Methods:
+    -------
+    affectPlayer(player):
+        Makes the player car invisible.
+    deactivate(player):
+        Reveals the player car.
+
+    """
     
     def __init__(self, speed, timeout=3000):
         super().__init__(speed, timeout)
@@ -165,7 +285,29 @@ class Invisibility(PowerUp):
         super().deactivate(player)
         player.setVisible()
 
+
 class Random(PowerUp):
+    """
+    Random Power-Up Class
+
+    This child class of the `PowerUp` class represents the random power-up in the Turbo Racing 3000 game.
+    It randomly activates one of the four other power-ups (Invincibility, Slowing, Repaint, Invisibility) and applies its effect to the player car.
+
+    Attributes:
+    ----------
+    speed: int
+        The speed at which the Power-Up moves along the track.
+    timeout: int
+        Duration for which the Power-Up's effects last.
+
+    Methods:
+    -------
+    affectPlayer(player):
+        Randomly activates one of the four power-ups and applies its effect.
+    deactivate(player):
+        Reverts the applied effect and clears the active power-up from the player object.
+
+    """
 
     def __init__(self, speed, timeout=3000):
         super().__init__(speed, timeout)
@@ -175,6 +317,7 @@ class Random(PowerUp):
         
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
+
 
     def affectPlayer(self, player):
 
@@ -188,6 +331,7 @@ class Random(PowerUp):
 
         # Store the active power-up in the player object for later deactivation
         player.active_powerup = chosen_powerup
+
 
     def deactivate(self, player):
         # Ensure there's an active power-up to deactivate

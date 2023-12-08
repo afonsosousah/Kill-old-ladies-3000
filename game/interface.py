@@ -1,12 +1,26 @@
 import pygame
 import pygame.gfxdraw
-import sys
 from car_selector import car_selector
 from multiplayer_car_selector import multiplayer_car_selector
 
 
-# Creating a function that creates the GUI
 def interface():
+    """Main Game Interface
+
+    This function provides the main game interface for the Turbo Racing 3000 game.
+    It manages the game menu, including buttons for singleplayer, multiplayer, how to play, credits, and quit.
+    It also handles user input and transitions between different game modes based on user selection.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    None
+
+    """
+    
     # initiating pygames
     pygame.init()
     
@@ -151,6 +165,37 @@ def interface():
 
 # Function that draws the rhomboids used as the buttons
 def drawRhomboid(surface, color, outline_color, x, y, width, height, offset, thickness=0):
+    """Draw Rhomboid Button
+
+    This function draws a rhomboid-shaped button with optional border using Pygame's graphics drawing functions.
+
+    Parameters
+    ----------
+    surface: pygame.Surface
+        Target surface to draw the rhomboid onto.
+    color: tuple(int, int, int)
+        Color of the filled rhomboid.
+    outline_color: tuple(int, int, int)
+        Color of the optional border.
+    x: int
+        Horizontal position of the top-left corner of the rhomboid.
+    y: int
+        Vertical position of the top-left corner of the rhomboid.
+    width: int
+        Width of the rhomboid.
+    height: int
+        Height of the rhomboid.
+    offset: int
+        Offset from the top-left corner of the rhomboid for the filled rhomboid.
+    thickness: int, optional
+        Thickness of the border, default is 0.
+
+    Returns
+    -------
+    None
+
+    """
+    
     points = [
         (x + offset, y), 
         (x + width + offset, y), 
@@ -166,6 +211,22 @@ def drawRhomboid(surface, color, outline_color, x, y, width, height, offset, thi
 
 
 def credits_():
+    """Show Credits Screen
+
+    This function displays the credits screen of the Turbo Racing 3000 game.
+    It loads and displays the credits GIF animation, plays the credits soundtrack, and handles user input for the back button.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    None
+
+    """
+
+
     res = (720, 720)
     screen = pygame.display.set_mode(res)
     
@@ -221,6 +282,22 @@ def credits_():
 
 
 def how_to_play():
+    """How To Play Screen
+
+    This function displays the how to play screen of the Turbo Racing 3000 game.
+    It loads and displays the how to play image, plays the how to play soundtrack, and handles user input for the back button.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    None
+
+    """
+    
+    
     res = (720, 720)
     screen = pygame.display.set_mode(res)
     

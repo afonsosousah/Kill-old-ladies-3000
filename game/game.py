@@ -8,6 +8,25 @@ import interface
 import math
 
 def car_racing():
+    """The core game loop for the singleplayer game
+
+    This function contains the main game loop which controls the game's flow and logic. 
+    It handles player input, updates the game state, draws the game objects, and checks for collisions.
+
+    The game consists of one player deviating from oncoming traffic. The car can move left, right, and accelerate.
+    There are also power-ups that can be collected to gain advantages.
+
+    The game ends when the player crashes into a car or runs out of fuel.
+
+    Parameters
+    ----------
+        None
+
+    Returns
+    -------
+        None
+    """
+    
     pygame.init()
 
     GREEN = (20, 255, 140)

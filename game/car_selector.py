@@ -1,12 +1,26 @@
 import pygame
 import pygame.gfxdraw
-import sys
 from game import car_racing
 import interface
 import main
 
-# Creating a function that creates the GUI
 def car_selector():
+    """ Interface where player chooses car
+    
+    This function presents a car selection interface for the game.
+    The user can choose one of the six available cars to play with.
+    Once the car is selected, the player is taken to the game loop.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    None
+
+    """
+    
     # initiating pygames
     pygame.init()
     

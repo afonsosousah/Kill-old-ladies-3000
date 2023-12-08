@@ -8,6 +8,23 @@ import interface
 import math
 
 def multiplayer_racing():
+    """
+    Starts a multiplayer racing game with two players.
+
+    The game consists of two players racing their cars against each other. The cars can move left, right, and accelerate.
+    There are also power-ups that can be collected to gain advantages.
+
+    The game ends when one of the players crashes into a car or runs out of fuel. The player that lasted the longest wins.
+    
+    Parameters
+    ----------
+        None
+
+    Returns
+    -------
+        None
+    """
+        
     pygame.init()
 
     WHITE = (255, 255, 255)
