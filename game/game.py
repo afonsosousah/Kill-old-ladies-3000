@@ -1,7 +1,7 @@
 import pygame, random
 # Let's import the Car class and the Map class
 from car import Car
-from power_up import Invincibility, Slowing, Repaint, Invisibility
+from power_up import Invincibility, Slowing, Repaint, Invisibility, Random
 from fuel_can import FuelCan
 import main
 import interface
@@ -138,9 +138,8 @@ def car_racing():
     powerUpSpawnLocationsX = (250, 390, 500)  # spawn in the middle of the lanes
     
     # Define what are the available types of power ups, and their weights
-    powerUpTypes = [Invincibility, Slowing, Repaint, Invisibility]
-    powerUpWeights = [15, 25, 20, 10]
-    #powerUpTypes = ("invincibility", "slowing", "repaint", "random", "invisibility")
+    powerUpTypes = [Invincibility, Slowing, Repaint, Invisibility, Random]
+    powerUpWeights = [15, 20, 10, 25, 30]
     
     # Creating the Power Ups
     powerUp1 = random.choices(powerUpTypes, powerUpWeights)[0](random.randint(50, 70))  # Select a PowerUp based on the weights 

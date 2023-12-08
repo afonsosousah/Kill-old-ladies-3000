@@ -161,3 +161,40 @@ class Invisibility(PowerUp):
     def deactivate(self, player):
         super().deactivate(player)
         player.setVisible()
+
+class Random(PowerUp):
+
+    def __init__(self, speed, timeout=3000):
+        super().__init__(speed, timeout)
+        
+        # Set the power up image
+        self.image = pygame.image.load(f'assets/powerup_random.png')
+        
+        # Fetch the rectangle object that has the dimensions of the image.
+        self.rect = self.image.get_rect()
+
+    def affectPlayer(self, player):
+
+        # Randomly activate one of the power-ups
+        available_powerups = [Invincibility, Slowing, Repaint, Invisibility]
+        chosen_powerup_class = random.choice(available_powerups)
+        chosen_powerup = chosen_powerup_class(self.speed, self.timeout)
+        chosen_powerup.affectPlayer(player)
+
+        pygame.time.set_timer(pygame.USEREVENT, 3000, 1)
+
+        # Store the active power-up in the player object for later deactivation
+        player.active_powerup = chosen_powerup
+
+    def deactivate(self, player):
+        # Ensure there's an active power-up to deactivate
+        if player.active_powerup:
+            # Deactivate the currently active power-up
+            player.active_powerup.deactivate(player)
+            
+            # Clear the active power-up after deactivation
+            player.active_powerup = None
+            
+            # Restore the player's car image to its original state
+            player.image = pygame.image.load(f'assets/car{main.selected_car}.png').convert_alpha()
+
