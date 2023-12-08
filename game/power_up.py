@@ -52,8 +52,8 @@ class PowerUp(pygame.sprite.Sprite):
         powerUpSpawnLocationsX = (250, 390, 500)  # spawn in the middle of the lanes
         
         # Define the types and weights
-        powerUpTypes = [Invincibility, Slowing, Repaint, Invisibility]
-        powerUpWeights = [15, 25, 20, 10]
+        powerUpTypes = [Invincibility, Slowing, Repaint, Invisibility, Random]
+        powerUpWeights = [15, 25, 20, 10, 30]
         
         # Remove the current power up class from the list
         index = powerUpTypes.index(self.__class__)
@@ -110,17 +110,31 @@ class Slowing(PowerUp):
         self.rect = self.image.get_rect()
         
     def affectPlayer(self, player):
-        self.original_speed = main.speed
-        main.speed = 0.2
-        player.slowing = True
-        player.image = pygame.image.load(f'assets/car_slowing.png')
+        #self.original_speed = main.speed
+        #main.speed = 0.2
+        #player.slowing = True
+        #player.image = pygame.image.load(f'assets/car_slowing.png')
+        #pygame.time.set_timer(pygame.USEREVENT, 3000, 1)
+        main.slowing_active = True
+
+        for car in main.all_coming_cars:
+            car.original_speed = car.speed
+            car.speed /= 1.5
+            car.original_image = car.image
+            car.image = pygame.image.load(f'assets/car_slowing.png')
+
         pygame.time.set_timer(pygame.USEREVENT, 3000, 1)
     
     def deactivate(self, player):
-        super().deactivate(player)
-        main.speed = self.original_speed
-        player.slowing = False
-        player.image = pygame.image.load(f'assets/car{main.selected_car}.png')
+        #super().deactivate(player)
+        #main.speed = self.original_speed
+        #player.slowing = False
+        #player.image = pygame.image.load(f'assets/car{main.selected_car}.png')
+        main.slowing_active = False
+
+        for car in main.all_coming_cars:
+            car.speed = car.original_speed
+            car.image = car.original_image
         
         
 class Repaint(PowerUp):
