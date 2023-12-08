@@ -68,7 +68,6 @@ def multiplayer_car_selector():
                 pygame.quit()
             # press the back button
             if ev.type == pygame.MOUSEBUTTONDOWN:
-                print(mouse)
                 if 150 <= mouse[0] <= 300 and 560 <= mouse[1] <= 620:
                     interface.interface()
             # pressing the play button
@@ -78,55 +77,47 @@ def multiplayer_car_selector():
             # pressing the next car button1
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if 276 <= mouse[0] <= 341 and 250 <= mouse[1] <= 330:
-                    if main.selected_car + 1 != main.selected_car2: # Don't let both players choose the same car
-                        if main.selected_car + 1 <= 6:
-                            main.selected_car += 1
-                        else:
-                            main.selected_car = 1
-                    else: # If the car would be the same, skip to the next one
-                        if main.selected_car + 2 <= 6:
-                            main.selected_car += 2
-                        else:
-                            main.selected_car = 1
+                    # Don't let both players choose the same car
+                    car_models = [1,2,3,4,5,6]
+                    car_models.remove(main.selected_car2)
+                    current_index = car_models.index(main.selected_car)
+                    if current_index + 1 < len(car_models):
+                        main.selected_car = car_models[current_index + 1]
+                    else:
+                        main.selected_car = car_models[0]
             # pressing the previous car button1
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if 57 <= mouse[0] <= 122 and 250 <= mouse[1] <= 330:
-                    if main.selected_car - 1 != main.selected_car2: # Don't let both players choose the same car
-                        if main.selected_car - 1 >= 1:
-                            main.selected_car -= 1
-                        else:
-                            main.selected_car = 6
-                    else: # If the car would be the same, skip to the next one
-                        if main.selected_car - 2 >= 1:
-                            main.selected_car -= 2
-                        else:
-                            main.selected_car = 6
+                    # Don't let both players choose the same car
+                    car_models = [1,2,3,4,5,6]
+                    car_models.remove(main.selected_car2)
+                    current_index = car_models.index(main.selected_car)
+                    if current_index - 1 >= 0:
+                        main.selected_car = car_models[current_index - 1]
+                    else:
+                        main.selected_car = car_models[-1]  # last car
             # pressing the next car button2
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if 591 <= mouse[0] <= 656 and 250 <= mouse[1] <= 330:
-                    if main.selected_car2 + 1 != main.selected_car: # Don't let both players choose the same car
-                        if main.selected_car2 + 1 <= 6:
-                            main.selected_car2 += 1
-                        else:
-                            main.selected_car2 = 1
-                    else: # If the car would be the same, skip to the next one
-                        if main.selected_car2 + 2 <= 6:
-                            main.selected_car2 += 2
-                        else:
-                            main.selected_car2 = 1
+                    # Don't let both players choose the same car
+                    car_models = [1,2,3,4,5,6]
+                    car_models.remove(main.selected_car)
+                    current_index = car_models.index(main.selected_car2)
+                    if current_index + 1 < len(car_models):
+                        main.selected_car2 = car_models[current_index + 1]
+                    else:
+                        main.selected_car2 = car_models[0]
             # pressing the previous car button2
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if 386 <= mouse[0] <= 451 and 250 <= mouse[1] <= 330:
-                    if main.selected_car2 - 1 != main.selected_car: # Don't let both players choose the same car
-                        if main.selected_car2 - 1 >= 1:
-                            main.selected_car2 -= 1
-                        else:
-                            main.selected_car2 = 6
-                    else: # If the car would be the same, skip to the next one
-                        if main.selected_car2 - 2 >= 1:
-                            main.selected_car2 -= 2
-                        else:
-                            main.selected_car2 = 6
+                    # Don't let both players choose the same car
+                    car_models = [1,2,3,4,5,6]
+                    car_models.remove(main.selected_car)
+                    current_index = car_models.index(main.selected_car2)
+                    if current_index - 1 >= 0:
+                        main.selected_car2 = car_models[current_index - 1]
+                    else:
+                        main.selected_car2 = car_models[-1]  # last car
             
         # Infinite scrolling map as background
         screen.blit(MAP, [0, mapY0, 720, 1080])
@@ -145,7 +136,7 @@ def multiplayer_car_selector():
         screen.blit(transparent_black, (0,0))
     
         
-        # print the buttons text and the box(color changing)
+        # Draw the buttons text and the box(color changing)
         
         # play text
         mouse = pygame.mouse.get_pos()

@@ -45,9 +45,6 @@ def car_racing():
     score_font = pygame.font.SysFont('Corbel', 20, bold = True)
     score_text = score_font.render("Score: " + str(score_value), True, (255, 255, 255))
 
-    # Creating the high score
-    
-
     # Creating the score and highscore for the game over menu
     score_font_gameover = pygame.font.SysFont('Corbel', 35, bold = True)
     score_background_gameover = pygame.image.load("assets/score_background_gameover.png").convert_alpha()
@@ -172,8 +169,6 @@ def car_racing():
     carryOn = True
     clock=pygame.time.Clock()
     wait_for_key = True
-
-    main.slowing_active = False
     
     # Set the initial fuel level (1.0 represents a full tank)
     playerCar.fuel_level = 1.0
@@ -198,8 +193,12 @@ def car_racing():
             
 
     # Play game soundtrack
-    #pygame.mixer.music.load('assets/game_soundtrack.mp3')
-    #pygame.mixer.music.play(-1)
+    music_list = ['assets/game_soundtrack.mp3', 'assets/game_soundtrack2.mp3', 'assets/game_soundtrack3.mp3']
+    pygame.mixer.music.load(music_list.pop(random.randrange(len(music_list)))) # Select a random song and remove from list
+    pygame.mixer.music.queue(music_list.pop(random.randrange(len(music_list))))
+    pygame.mixer.music.queue(music_list.pop(random.randrange(len(music_list))))
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.7)
 
 
     while carryOn:
@@ -229,24 +228,21 @@ def car_racing():
                     if 445 <= mouse[0] <= 595 and 500 <= mouse[1] <= 560:
                         if pause:
                             pause = False
-                        elif car_crash:
+                        elif car_crash or (playerCar.fuel_level == 0):
                             car_racing()
                             
                 # Pressing the pause button
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if 725 <= mouse[0] <= 775 and 15 <= mouse[1] <= 65:
                         pause = True
-                        print("Game Paused!")
                 elif event.type==pygame.KEYDOWN:
                     if event.key==pygame.K_ESCAPE:
                         if not car_crash:
                             # You can pause and resume the game by pressing 'esc'
                             if pause:
                                 pause = False
-                                print("Game Resumed!") 
                             else:
                                 pause = True
-                                print("Game Paused!")
                             
                 # Stop moving to the sides after the key is released
                 if event.type == pygame.KEYUP:
@@ -263,8 +259,8 @@ def car_racing():
                 mapY0 = mapY1 - 1200
             # move the map 
             if(not pause):
-                mapY0 += main.speed * 2
-                mapY1 += main.speed * 2
+                mapY0 += main.speed * 1.5
+                mapY1 += main.speed * 1.5
 
             # Drawing the score
             screen.blit(score_background, (10, 10))
@@ -280,20 +276,22 @@ def car_racing():
 
             if(not pause):
                 keys = pygame.key.get_pressed()
-                if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and not car_crash and main.speed != 0:
+                if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and not (car_crash or (playerCar.fuel_level == 0)) and main.speed != 0:
                     playerCar.moveLeft(8)
-                if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and not car_crash and main.speed != 0:
+                if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and not (car_crash or (playerCar.fuel_level == 0)) and main.speed != 0:
                     playerCar.moveRight(8)
-                if (keys[pygame.K_UP] or keys[pygame.K_w]) and not car_crash:
+                if (keys[pygame.K_UP] or keys[pygame.K_w]) and not (car_crash or (playerCar.fuel_level == 0)):
                     # setting max speed (120kph) and not letting speed up if slowing power up
                     if math.floor((main.speed + 0.03) * 50) <= 270:
                         #and not playerCar.slowing:
                         main.speed += 0.03
-                if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not car_crash:
+                        playerCar.moveForwardPlayer()
+                if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not (car_crash or (playerCar.fuel_level == 0)):
                     # setting min speed (50kph) and not letting speed down if slowing power up
                     if math.floor((main.speed - 0.05) * 50) >= 30:
                         #and not playerCar.slowing:
-                        main.speed -= 0.05
+                        main.speed -= 0.03
+                        playerCar.moveBackwardPlayer()
 
 
             # Create the player mask for the collisions
@@ -315,7 +313,6 @@ def car_racing():
                     score_value += 1
                 elif collision_point:
                     car_crash = True
-                    print("Collision!")
 
         
             ''' Pixel perfect collision between player and powerups '''
@@ -325,8 +322,6 @@ def car_racing():
                     offset = (int(powerUp.rect.x - playerCar.rect.x), int(powerUp.rect.y - playerCar.rect.y))
                     collision_point = player_car_mask.overlap(powerUpMask, offset)
                     if collision_point:
-                        print("Collision with powerup!")
-                        
                         # Deactivate the previous power up before activating new one
                         if playerCar.activePowerUp:
                             playerCar.activePowerUp.deactivate(playerCar)
@@ -347,7 +342,6 @@ def car_racing():
                 offset = (int(fuel_can.rect.x - playerCar.rect.x), int(fuel_can.rect.y - playerCar.rect.y))
                 collision_point = player_car_mask.overlap(fuelCanMask, offset)
                 if collision_point:
-                    print("Collision with fuel can!")
                     playerCar.refuel()
                     # respawn the fuel can
                     fuel_can.rect.y = random.randint(-2000, -1000)
@@ -365,7 +359,7 @@ def car_racing():
                         car.rect.y = random.randint(-1000, -100)
                         score_value += 1
 
-                    if main.slowing_active:
+                    if playerCar.activePowerUp.__class__.__name__ == "Slowing":
                         car.image = pygame.image.load(f'assets/car_slowing.png').convert_alpha()
                     
             
@@ -538,10 +532,12 @@ def car_racing():
                 # Show the Game Over art
                 screen.blit(pygame.image.load('assets/game_over.png'), [0, 0, SCREENWIDTH, SCREENHEIGHT])
                 
+                # Show the score boxes
+                screen.blit(score_background_gameover, (220, 325))
+                
                 # Show final score
                 score_text_gameover = score_font_gameover.render(str(score_value), True, (255, 255, 255))
-                screen.blit(score_background_gameover, (220, 325))
-                screen.blit(score_text_gameover, (285, 362))
+                screen.blit(score_text_gameover, (295 - score_text_gameover.get_width()//2, 362))
                 
                 # Show the highscore
                 screen.blit(highscore_background_gameover, (450, 325))
@@ -553,7 +549,7 @@ def car_racing():
                         file.write(str(persistent_dict))
                     
                 highscore_text_gameover = score_font_gameover.render(str(persistent_dict['highscore']), True, (255, 255, 255))
-                screen.blit(highscore_text_gameover, (505, 362))
+                screen.blit(highscore_text_gameover, (525 - highscore_text_gameover.get_width()//2, 362))
                 
                 # Draw the buttons
                 mouse = pygame.mouse.get_pos()

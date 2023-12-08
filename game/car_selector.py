@@ -43,6 +43,7 @@ def car_selector():
 
     # store the selected car
     main.selected_car = 1
+    main.selected_car2 = None  # specify for repaint to work well in multiplayer
 
     # Create the infinite scrolling background for the menu
     MAP = pygame.image.load("assets/infinite_level.png").convert_alpha()
@@ -98,7 +99,7 @@ def car_selector():
         screen.blit(transparent_black, (0,0))
     
         
-        # print the buttons text and the box(color changing)
+        # Draw the buttons text and the box(color changing)
         
         # play text
         mouse = pygame.mouse.get_pos()

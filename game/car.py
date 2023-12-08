@@ -34,8 +34,9 @@ class Car(pygame.sprite.Sprite):
         self.invisible = False
         self.affected = False
         self.activePowerUp = None
-        self.original_speed = self.speed
+        self.original_speed = speed
         self.original_image = self.image
+        self.original_model = model
 
         # Draw the car (a rectangle!)
             #pygame.draw.rect(self.image, self.color, [0, 0, self.width, self.height])
@@ -70,16 +71,25 @@ class Car(pygame.sprite.Sprite):
 
     def moveBackward(self, speed):
         self.rect.y -= self.speed * speed / 20
+        
+    def moveForwardPlayer(self):
+        self.rect.y -= self.speed // 50
+        
+    def moveBackwardPlayer(self):
+        self.rect.y += self.speed // 50
 
     def changeSpeed(self, speed):
         self.speed = speed
 
     def repaint(self, isPlayer=False):
         models = [1, 2, 3, 4, 5, 6]
-        if not isPlayer:
+        
+        if not main.selected_car2: # If its not multiplayer
             # Remove the player's car model from the list of all coming car potential models
-            if main.selected_car in models:
-                models.remove(main.selected_car)
+            models.remove(main.selected_car)
+        else: # The game is in multiplayer
+            models.remove(main.selected_car)
+            models.remove(main.selected_car2)
         
         # Remove the current model to ensure the car is repainted to a different model
         if self.model in models:
@@ -97,9 +107,9 @@ class Car(pygame.sprite.Sprite):
         self.model = new_model
         
     # Is used to repaint the player car back to default when repaint powerup ends
-    def repaintOriginal(self):
+    def repaintOriginal(self, player):
         # The new model is the original one
-        new_model = main.selected_car
+        new_model = player.original_model
 
         # Load the new car image and apply flip if necessary
         self.image = pygame.image.load(f"assets/car{new_model}.png").convert_alpha()
@@ -115,7 +125,7 @@ class Car(pygame.sprite.Sprite):
         # Save the original image of the car to restore it later
         self.original_image = self.image
         # Load the "ghost" version of the car
-        self.image = pygame.image.load(f'assets/ghostcar{main.selected_car}.png').convert_alpha()
+        self.image = pygame.image.load(f'assets/ghostcar{self.original_model}.png').convert_alpha()
         if self.flip:
             self.image = pygame.transform.flip(self.image, True, True)
 

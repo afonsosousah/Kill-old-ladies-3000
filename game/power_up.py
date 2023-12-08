@@ -94,7 +94,7 @@ class Invincibility(PowerUp):
     def deactivate(self, player):
         super().deactivate(player)  # Repaint the power up
         player.invincible = False
-        player.image = pygame.image.load(f'assets/car{main.selected_car}.png')
+        player.image = pygame.image.load(f'assets/car{player.original_model}.png')
         
 
 class Slowing(PowerUp):
@@ -110,27 +110,16 @@ class Slowing(PowerUp):
         self.rect = self.image.get_rect()
         
     def affectPlayer(self, player):
-        #self.original_speed = main.speed
-        #main.speed = 0.2
-        #player.slowing = True
-        #player.image = pygame.image.load(f'assets/car_slowing.png')
-        #pygame.time.set_timer(pygame.USEREVENT, 3000, 1)
-        main.slowing_active = True
-
         for car in main.all_coming_cars:
             car.original_speed = car.speed
-            car.speed /= 1.5
+            car.speed *= 0.4
             car.original_image = car.image
             car.image = pygame.image.load(f'assets/car_slowing.png')
 
         pygame.time.set_timer(pygame.USEREVENT, 3000, 1)
     
     def deactivate(self, player):
-        #super().deactivate(player)
-        #main.speed = self.original_speed
-        #player.slowing = False
-        #player.image = pygame.image.load(f'assets/car{main.selected_car}.png')
-        main.slowing_active = False
+        super().deactivate(player)
 
         for car in main.all_coming_cars:
             car.speed = car.original_speed
@@ -154,7 +143,7 @@ class Repaint(PowerUp):
     
     def deactivate(self, player):
         super().deactivate(player)
-        player.repaintOriginal()
+        player.repaintOriginal(player)
     
 
 class Invisibility(PowerUp):
@@ -210,5 +199,5 @@ class Random(PowerUp):
             player.active_powerup = None
             
             # Restore the player's car image to its original state
-            player.image = pygame.image.load(f'assets/car{main.selected_car}.png').convert_alpha()
+            player.image = pygame.image.load(f'assets/car{player.original_model}.png').convert_alpha()
 

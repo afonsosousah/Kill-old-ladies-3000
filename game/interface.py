@@ -17,6 +17,9 @@ def interface():
     # setting the window title
     pygame.display.set_caption("Turbo Racing 3000")
     
+    # setting the icon
+    pygame.display.set_icon(pygame.image.load("assets/icon.png"))
+    
     # creating some colors (RGB scale)
     white = (255, 255, 255)
     yellow = (255, 210, 48)
@@ -27,10 +30,6 @@ def interface():
     # saving the screen sizes
     width = screen.get_width()
     height = screen.get_height()
-    
-    # creating title text label
-    #comicsansfont = pygame.font.SysFont('Comic Sans MS', 50)
-    #title_text = comicsansfont.render('Turbo Racing 3000', True, yellow)
     
     # creating buttons text labels
     font = pygame.font.Font('fonts/MASQUE__.ttf', 28)
@@ -46,6 +45,11 @@ def interface():
     mapY0 = -200
     mapY1 = -1280
     
+    # Play game soundtrack
+    pygame.mixer.music.load('assets/game_soundtrack.mp3')
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.7)
+    
     # interface loop
     while True:
         # getting the input of the user
@@ -55,8 +59,6 @@ def interface():
                 pygame.quit()
             # press on quit button
             if ev.type == pygame.MOUSEBUTTONDOWN:
-                print(width)
-                print(height)
                 if 210 <= mouse[0] <= 210 + 300 and 560 <= mouse[1] <= 560 + 60:
                     pygame.quit()
             # press the credits button
@@ -94,7 +96,7 @@ def interface():
         screen.blit(transparent_black, (0,0))
         
         
-        # print the buttons text and the box(color changing)
+        # draw the buttons text and the box(color changing)
         
         # singleplayer text
         mouse = pygame.mouse.get_pos()
@@ -146,6 +148,8 @@ def interface():
         # PYGAME BUILT IN FUCTION that updates the screen at every oteration of the loop
         pygame.display.update()
 
+
+# Function that draws the rhomboids used as the buttons
 def drawRhomboid(surface, color, outline_color, x, y, width, height, offset, thickness=0):
     points = [
         (x + offset, y), 
@@ -171,16 +175,14 @@ def credits_():
 
     width = screen.get_width()
     height = screen.get_height()
-    #credits_background = pygame.image.load("assets/credits.png")
 
     # creating buttons text label
     font = pygame.font.Font('fonts/MASQUE__.ttf', 28)
     back_text = font.render('Back', True, white)
 
-    # comicsansfont = pygame.font.SysFont('Comic Sans MS', 25)
-    # line1_text = comicsansfont.render('Afonso Hermenegildo, 20221958', True, yellow)
-    # line2_text = comicsansfont.render('Diogo Oliveira, 20221928', True, yellow)
-    # line3_text = comicsansfont.render('Tomás Rodrigues, 20221956', True, yellow)
+    # Play credits soundtrack
+    pygame.mixer.music.load('assets/credits_soundtrack.mp3')
+    pygame.mixer.music.play(-1)
     
     gif_frame = 0
 
@@ -193,6 +195,7 @@ def credits_():
             # press the back button
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if 75 <= mouse[0] <= 225 and 620 <= mouse[1] <= 680:
+                    pygame.mixer.music.stop()
                     interface()
         
         # Show the frames of the credits gif
@@ -204,13 +207,7 @@ def credits_():
             gif_frame = 0
             
         pygame.time.delay(30)
-                                    
-        #screen.blit(pygame.image.load('assets/credits.png'), [0, 0, width, height])
-
-        # credits text
-        # screen.blit(line1_text, (0, 0))
-        # screen.blit(line2_text, (0, 25))
-        # screen.blit(line3_text, (0, 50))
+        
         
         # back text
         if 75 <= mouse[0] <= 225 and 620 <= mouse[1] <= 680:
@@ -220,6 +217,8 @@ def credits_():
         screen.blit(back_text, (75 + 12.5 + (150 - back_text.get_width())/2, 620 + 12.5))
 
         pygame.display.update()
+
+
 
 def how_to_play():
     res = (720, 720)
@@ -235,6 +234,10 @@ def how_to_play():
     # creating buttons text label
     font = pygame.font.Font('fonts/MASQUE__.ttf', 28)
     back_text = font.render('Back', True, white)
+    
+    # Play credits soundtrack
+    pygame.mixer.music.load('assets/howtoplay_soundtrack.mp3')
+    pygame.mixer.music.play(-1)
 
     # Create the infinite scrolling background for the menu
     MAP = pygame.image.load("assets/infinite_level.png").convert_alpha()

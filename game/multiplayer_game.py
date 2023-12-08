@@ -117,6 +117,7 @@ def multiplayer_racing():
     # Create a list of the enemy cars
     all_coming_cars = pygame.sprite.Group()
     all_coming_cars.add(car1, car2, car3, car4)
+    main.all_coming_cars = all_coming_cars
 
     # Define where the power ups spawn
     powerUpSpawnLocationsX = (250, 390, 500)  # spawn in the middle of the lanes
@@ -174,8 +175,12 @@ def multiplayer_racing():
     game_over_reason = None
 
     # Play game soundtrack
-    #pygame.mixer.music.load('assets/game_soundtrack.mp3')
-    #pygame.mixer.music.play(-1)
+    music_list = ['assets/game_soundtrack.mp3', 'assets/game_soundtrack2.mp3', 'assets/game_soundtrack3.mp3']
+    pygame.mixer.music.load(music_list.pop(random.randrange(len(music_list)))) # Select a random song and remove from list
+    pygame.mixer.music.queue(music_list.pop(random.randrange(len(music_list))))
+    pygame.mixer.music.queue(music_list.pop(random.randrange(len(music_list))))
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.7)
 
 
     while carryOn:
@@ -207,28 +212,20 @@ def multiplayer_racing():
                     if 445 <= mouse[0] <= 595 and 500 <= mouse[1] <= 560:
                         if pause:
                             pause = False
-                        elif car_crash:
+                        elif car_crash or (playerCar1.fuel_level == 0) or (playerCar2.fuel_level == 0):
                             multiplayer_racing()
                             
                 # Pressing the pause button
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if 725 <= mouse[0] <= 775 and 15 <= mouse[1] <= 65:
-                        # Using the pause button to pause and resume the game (while we don't have the pause menu)
-                        # if pause:
-                            # pause = False
-                            # print("Game Resumed!") 
-                        # else:
-                            pause = True
-                            print("Game Paused!")
+                        pause = True
                 elif event.type==pygame.KEYDOWN:
                     if event.key==pygame.K_ESCAPE:
                         # You can pause and resume the game by pressing 'esc'
                         if pause:
                             pause = False
-                            print("Game Resumed!") 
                         else:
                             pause = True
-                            print("Game Paused!")
                             
                 # Stop moving to the sides after the key is released
                 if event.type == pygame.KEYUP:
@@ -246,8 +243,8 @@ def multiplayer_racing():
                 mapY0 = mapY1 - 1200
             # move the map 
             if(not pause):
-                mapY0 += main.speed * 2
-                mapY1 += main.speed * 2
+                mapY0 += main.speed * 1.5
+                mapY1 += main.speed * 1.5
 
             # Drawing the score
             screen.blit(score_background, (10, 10))
@@ -265,37 +262,37 @@ def multiplayer_racing():
 
             if(not pause):
                 keys = pygame.key.get_pressed()
-                if keys[pygame.K_LEFT] and not car_crash:
+                if keys[pygame.K_LEFT] and not (car_crash or (playerCar1.fuel_level == 0) or (playerCar2.fuel_level == 0)):
                     playerCar2.moveLeft(8)
-                if keys[pygame.K_RIGHT] and not car_crash:
+                if keys[pygame.K_RIGHT] and not (car_crash or (playerCar1.fuel_level == 0) or (playerCar2.fuel_level == 0)):
                     playerCar2.moveRight(8)
-                if keys[pygame.K_UP] and not car_crash:
+                if keys[pygame.K_UP] and not (car_crash or (playerCar1.fuel_level == 0) or (playerCar2.fuel_level == 0)):
                     # setting max speed (120kph) and not letting speed up if slowing power up
-                    if math.floor((main.speed + 0.03) * 50) <= 270 \
-                        and not playerCar2.slowing:
+                    if math.floor((main.speed + 0.03) * 50) <= 270:
                         main.speed += 0.03
-                if keys[pygame.K_DOWN] and not car_crash:
+                        playerCar2.moveForwardPlayer()
+                if keys[pygame.K_DOWN] and not (car_crash or (playerCar1.fuel_level == 0) or (playerCar2.fuel_level == 0)):
                     # setting min speed (50kph) and not letting speed down if slowing power up
-                    if math.floor((main.speed - 0.05) * 50) >= 30 \
-                        and not playerCar2.slowing:
-                        main.speed -= 0.05
+                    if math.floor((main.speed - 0.05) * 50) >= 30:
+                        main.speed -= 0.03
+                        playerCar2.moveBackwardPlayer()
             
             if(not pause):
                 keys = pygame.key.get_pressed()
-                if keys[pygame.K_a] and not car_crash:
+                if keys[pygame.K_a] and not (car_crash or (playerCar1.fuel_level == 0) or (playerCar2.fuel_level == 0)):
                     playerCar1.moveLeft(8)
-                if keys[pygame.K_d] and not car_crash:
+                if keys[pygame.K_d] and not (car_crash or (playerCar1.fuel_level == 0) or (playerCar2.fuel_level == 0)):
                     playerCar1.moveRight(8)
-                if keys[pygame.K_w] and not car_crash:
+                if keys[pygame.K_w] and not (car_crash or (playerCar1.fuel_level == 0) or (playerCar2.fuel_level == 0)):
                     # setting max speed (120kph) and not letting speed up if slowing power up
-                    if math.floor((main.speed + 0.03) * 50) <= 270 \
-                        and not playerCar1.slowing:
+                    if math.floor((main.speed + 0.03) * 50) <= 270:
                         main.speed += 0.03
-                if keys[pygame.K_s] and not car_crash:
+                        playerCar1.moveForwardPlayer()
+                if keys[pygame.K_s] and not (car_crash or (playerCar1.fuel_level == 0) or (playerCar2.fuel_level == 0)):
                     # setting min speed (50kph) and not letting speed down if slowing power up
-                    if math.floor((main.speed - 0.05) * 50) >= 30 \
-                        and not playerCar1.slowing:
-                        main.speed -= 0.05
+                    if math.floor((main.speed - 0.05) * 50) >= 30:
+                        main.speed -= 0.03
+                        playerCar1.moveBackwardPlayer()
 
 
             # Create the player mask for the collisions
@@ -321,7 +318,6 @@ def multiplayer_racing():
                 elif collision_point:
                     car_crash = True
                     game_over_reason = "Player 2 won, since player 1 crashed"
-                    print("Collision!")
                 # Car 2
                 offset = (int(car.rect.x - playerCar2.rect.x), int(car.rect.y - playerCar2.rect.y))
                 collision_point = player_car2_mask.overlap(coming_cars_masks, offset)
@@ -337,7 +333,6 @@ def multiplayer_racing():
                 elif collision_point:
                     car_crash = True
                     game_over_reason = "Player 1 won, since player 2 crashed"
-                    print("Collision!")
             
             
             ''' Pixel perfect collision between players'''
@@ -348,7 +343,6 @@ def multiplayer_racing():
             if collision_point:
                 car_crash = True
                 game_over_reason = "The game was tied, since both players crashed"
-                print("Collision!")
 
         
             ''' Pixel perfect collision between player and powerups '''
@@ -399,7 +393,6 @@ def multiplayer_racing():
                 offset = (int(fuel_can.rect.x - playerCar1.rect.x), int(fuel_can.rect.y - playerCar1.rect.y))
                 collision_point = player_car_mask.overlap(fuelCanMask, offset)
                 if collision_point:
-                    print("Collision with fuel can! (player1)")
                     playerCar1.refuel()
                     is_low_fuel_player1 = False
                     # respawn the fuel can
@@ -412,7 +405,6 @@ def multiplayer_racing():
                 offset = (int(fuel_can.rect.x - playerCar2.rect.x), int(fuel_can.rect.y - playerCar2.rect.y))
                 collision_point = player_car2_mask.overlap(fuelCanMask, offset)
                 if collision_point:
-                    print("Collision with fuel can! (player2)")
                     playerCar2.refuel()
                     is_low_fuel_player2 = False
                     # respawn the fuel can
