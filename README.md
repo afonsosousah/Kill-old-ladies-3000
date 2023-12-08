@@ -1,13 +1,13 @@
 # Turbo Racing 3000
 
-![Gameplay](https://github.com/afonsosousah/Turbo-Racing-3000/blob/1.0.1/assets/gameplay.gif)
+![](https://github.com/afonsosousah/Turbo-Racing-3000/blob/main/assets/gameplay.gif)
 
 ## Project Description
 This project is a car game, where in the singleplayer mode your goal is to avoid collisions with enemy cars to achieve the highest score possible.
 In the multiplayer mode you are competing with another car that you can also collide with.
 
 ## Installation Instructions
-1. Download the [release](https://github.com/afonsosousah/Turbo-Racing-3000/archive/refs/tags/1.0.1.zip)
+1. Download the [release](https://github.com/afonsosousah/Turbo-Racing-3000/archive/refs/tags/1.0.0.zip)
 2. If you haven't installed pip, please install it
 3. Run ```pip install -r requirements.txt```
 4. See the next section to run the code
