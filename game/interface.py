@@ -17,15 +17,12 @@ def interface():
     # setting the window title
     pygame.display.set_caption("Turbo Racing 3000")
     
-    # creatinbg some colors (RGB scale)
+    # creating some colors (RGB scale)
     white = (255, 255, 255)
-    yellow = (253, 199, 79)
+    yellow = (255, 210, 48)
     red = (255, 0, 0)
-    green = (110, 218, 44)
-    blue = (0, 0, 255)
-    color_light = (170, 170, 170)
-    color_dark = (100, 100, 100)
-    black = (0, 0, 0)
+    green = (135, 203, 40)
+
     
     # saving the screen sizes
     width = screen.get_width()
@@ -36,12 +33,12 @@ def interface():
     #title_text = comicsansfont.render('Turbo Racing 3000', True, yellow)
     
     # creating buttons text labels
-    corbelfont = pygame.font.SysFont('Corbel', 40, bold=True, italic=True)
-    game1_text = corbelfont.render('Singleplayer', True, white)
-    game2_text = corbelfont.render('Multiplayer', True, white)
-    game3_text = corbelfont.render('How to Play', True, white)
-    credits_text = corbelfont.render('Credits', True, white)
-    quit_text = corbelfont.render('Quit', True, white)
+    font = pygame.font.Font('fonts/MASQUE__.ttf', 28)
+    singleplayer_text = font.render('Singleplayer', True, white)
+    multiplayer_text = font.render('Multiplayer', True, white)
+    howtoplay_text = font.render('How to Play', True, white)
+    credits_text = font.render('Credits', True, white)
+    quit_text = font.render('Quit', True, white)
     
     # Create the infinite scrolling background for the menu
     MAP = pygame.image.load("assets/infinite_level.png").convert_alpha()
@@ -66,9 +63,13 @@ def interface():
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if 210 <= mouse[0] <= 210 + 300 and 480 <= mouse[1] <= 480 + 60:
                     credits_()
+            # press the how to play button
+            if ev.type == pygame.MOUSEBUTTONDOWN:
+                if 210 <= mouse[0] <= 210 + 300 and 400 <= mouse[1] <= 400 + 60:
+                    how_to_play()
             # pressing the singleplayer button
             if ev.type == pygame.MOUSEBUTTONDOWN:
-                if 210 <= mouse[0] <= 510 and 240 <= mouse[1] <= 300:
+                if 210 <= mouse[0] <= 510 and 240 <= mouse[1] <= 240 + 60:
                     car_selector()
             # pressing the multiplayer button
             if ev.type == pygame.MOUSEBUTTONDOWN:
@@ -95,29 +96,29 @@ def interface():
         
         # print the buttons text and the box(color changing)
         
-        # game 1 text
+        # singleplayer text
         mouse = pygame.mouse.get_pos()
         # when the mouse is on the box it changes color
         if 210 <= mouse[0] <= 510 and 240 <= mouse[1] <= 300:
             drawRhomboid(screen, yellow, white, 195, 240, 300, 60, 30, 5)
         else:
             drawRhomboid(screen, yellow, yellow, 195, 240, 300, 60, 30, 5)
-        screen.blit(game1_text, (210 + (300 - game1_text.get_width())/2, 240 + 10))
+        screen.blit(singleplayer_text, (210 + (300 - singleplayer_text.get_width())/2, 240 + 10))
         
         # SAME FOR ALL THE OTHER BUTTONS
-        # game 2 text
+        # multiplayer text
         if 210 <= mouse[0] <= 210 + 300 and 320 <= mouse[1] <= 320 + 60:
             drawRhomboid(screen, yellow, white, 195, 320, 300, 60, 30, 5)
         else:
             drawRhomboid(screen, yellow, yellow, 195, 320, 300, 60, 30, 5)
-        screen.blit(game2_text, (210 + (300 - game2_text.get_width())/2, 320 + 10))
+        screen.blit(multiplayer_text, (210 + (300 - multiplayer_text.get_width())/2, 320 + 10))
         
-        # game 3 text
+        # how to play text
         if 210 <= mouse[0] <= 210 + 300 and 400 <= mouse[1] <= 400 + 60:
             drawRhomboid(screen, yellow, white, 195, 400, 300, 60, 30, 5)
         else:
             drawRhomboid(screen, yellow, yellow, 195, 400, 300, 60, 30, 5)
-        screen.blit(game3_text, (210 + (300 - game3_text.get_width())/2, 400 + 10))
+        screen.blit(howtoplay_text, (210 + (300 - howtoplay_text.get_width())/2, 400 + 10))
         
         # credits text
         if 210 <= mouse[0] <= 210 + 300 and 480 <= mouse[1] <= 480 + 60:
@@ -171,11 +172,10 @@ def credits_():
     width = screen.get_width()
     height = screen.get_height()
     #credits_background = pygame.image.load("assets/credits.png")
-    
 
     # creating buttons text label
-    corbelfont = pygame.font.SysFont('Corbel', 40, bold=True, italic=True)
-    back_text = corbelfont.render('Back', True, white)
+    font = pygame.font.Font('fonts/MASQUE__.ttf', 28)
+    back_text = font.render('Back', True, white)
 
     # comicsansfont = pygame.font.SysFont('Comic Sans MS', 25)
     # line1_text = comicsansfont.render('Afonso Hermenegildo, 20221958', True, yellow)
@@ -212,6 +212,65 @@ def credits_():
         # screen.blit(line2_text, (0, 25))
         # screen.blit(line3_text, (0, 50))
         
+        # back text
+        if 75 <= mouse[0] <= 225 and 620 <= mouse[1] <= 680:
+            drawRhomboid(screen, red, white, 75, 620, 150, 60, 30, 5)
+        else:
+            drawRhomboid(screen, red, red, 75, 620, 150, 60, 30, 5)
+        screen.blit(back_text, (75 + 12.5 + (150 - back_text.get_width())/2, 620 + 12.5))
+
+        pygame.display.update()
+
+def how_to_play():
+    res = (720, 720)
+    screen = pygame.display.set_mode(res)
+    
+    # creating some important colors
+    white = (255, 255, 255)
+    red = (255, 0, 0)
+
+    width = screen.get_width()
+    height = screen.get_height()
+
+    # creating buttons text label
+    font = pygame.font.Font('fonts/MASQUE__.ttf', 28)
+    back_text = font.render('Back', True, white)
+
+    # Create the infinite scrolling background for the menu
+    MAP = pygame.image.load("assets/infinite_level.png").convert_alpha()
+    MAP = pygame.transform.scale_by(MAP, 0.9)
+    mapY0 = -200
+    mapY1 = -1280
+
+    while True:
+        mouse = pygame.mouse.get_pos()
+        for ev in pygame.event.get():
+            # press on exit button
+            if ev.type == pygame.QUIT:
+                pygame.quit()
+            # press the back button
+            if ev.type == pygame.MOUSEBUTTONDOWN:
+                if 75 <= mouse[0] <= 225 and 620 <= mouse[1] <= 680:
+                    interface()
+
+        # Infinite scrolling map as background
+        screen.blit(MAP, [0, mapY0, 720, 1080])
+        screen.blit(MAP, [0, mapY1, 720, 1080])
+        if mapY0 > -300:
+            mapY1 = mapY0 - 1080
+        if mapY1 > -300:
+            mapY0 = mapY1 - 1080
+        # move the map 
+        mapY0 += 1
+        mapY1 += 1
+        
+        # Transparent black mid layer
+        transparent_black = pygame.image.load('assets/empty.png')
+        transparent_black = pygame.transform.scale(transparent_black, (720, 720))
+        screen.blit(transparent_black, (0,0))
+
+        screen.blit(pygame.image.load('assets/howtoplay.png'), [0, 0, width, height])
+
         # back text
         if 75 <= mouse[0] <= 225 and 620 <= mouse[1] <= 680:
             drawRhomboid(screen, red, white, 75, 620, 150, 60, 30, 5)

@@ -11,17 +11,16 @@ def car_racing():
     pygame.init()
 
     GREEN = (20, 255, 140)
-    GREY = (210, 210 ,210)
     WHITE = (255, 255, 255)
     RED = (255, 0, 0)
     PURPLE = (255, 0, 255)
-    YELLOW = (253, 199, 79)
+    YELLOW = (255, 210, 48)
     CYAN = (0, 255, 255)
     BLUE = (100, 100, 255)
 
     main.speed = 1
     main.active_power_up = None
-    colorList = (RED, GREEN, PURPLE, YELLOW, CYAN, BLUE)
+
     car_crash = False
 
     SCREENWIDTH=800
@@ -79,11 +78,11 @@ def car_racing():
     pause_button = pygame.transform.scale(pause_button, (50,50))
 
     # creating buttons text labels
-    corbelfont = pygame.font.SysFont('Corbel', 40, bold=True, italic=True)
-    play_text = corbelfont.render('Play', True, WHITE)
-    back_text = corbelfont.render('Back', True, WHITE)
-    resume_text = corbelfont.render('Resume', True, WHITE)
-    quit_text = corbelfont.render('Quit', True, WHITE)
+    font = pygame.font.Font('fonts/MASQUE__.ttf', 28)
+    play_text = font.render('Play', True, WHITE)
+    back_text = font.render('Back', True, WHITE)
+    resume_text = font.render('Resume', True, WHITE)
+    quit_text = font.render('Quit', True, WHITE)
 
     #This will be a list that will contain all the sprites we intend to use in our game.
     all_sprites_list = pygame.sprite.Group()
