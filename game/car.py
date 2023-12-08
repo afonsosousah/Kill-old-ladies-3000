@@ -17,7 +17,7 @@ class Car(pygame.sprite.Sprite):
         self.image = pygame.image.load(f"assets/car{model}.png").convert_alpha()
         if flip:
             self.image = pygame.transform.flip(self.image, True, True)
-        self.original_image = self.image
+        
 
         #Initialise attributes of the car.
         self.width = width
@@ -34,6 +34,8 @@ class Car(pygame.sprite.Sprite):
         self.invisible = False
         self.affected = False
         self.activePowerUp = None
+        self.original_speed = self.speed
+        self.original_image = self.image
 
         # Draw the car (a rectangle!)
             #pygame.draw.rect(self.image, self.color, [0, 0, self.width, self.height])

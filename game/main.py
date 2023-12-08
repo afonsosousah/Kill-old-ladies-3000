@@ -3,6 +3,9 @@ global selected_car
 global selected_car2
 global speed
 global MAP_BORDER_MASK 
+global all_coming_cars
+global slowing_active
+
 
 def main():
     pygame.init()

@@ -126,11 +126,11 @@ def car_racing():
     all_sprites_list.add(playerCar)
 
     # Create a list of the enemy cars
-    all_coming_cars = pygame.sprite.Group()
-    all_coming_cars.add(car1)
-    all_coming_cars.add(car2)
-    all_coming_cars.add(car3)
-    all_coming_cars.add(car4)
+    main.all_coming_cars = pygame.sprite.Group()
+    main.all_coming_cars.add(car1)
+    main.all_coming_cars.add(car2)
+    main.all_coming_cars.add(car3)
+    main.all_coming_cars.add(car4)
     
     
     
@@ -172,6 +172,8 @@ def car_racing():
     carryOn = True
     clock=pygame.time.Clock()
     wait_for_key = True
+
+    main.slowing_active = False
     
     # Set the initial fuel level (1.0 represents a full tank)
     playerCar.fuel_level = 1.0
@@ -284,13 +286,13 @@ def car_racing():
                     playerCar.moveRight(8)
                 if (keys[pygame.K_UP] or keys[pygame.K_w]) and not car_crash:
                     # setting max speed (120kph) and not letting speed up if slowing power up
-                    if math.floor((main.speed + 0.03) * 50) <= 270 \
-                        and not playerCar.slowing:
+                    if math.floor((main.speed + 0.03) * 50) <= 270:
+                        #and not playerCar.slowing:
                         main.speed += 0.03
                 if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and not car_crash:
                     # setting min speed (50kph) and not letting speed down if slowing power up
-                    if math.floor((main.speed - 0.05) * 50) >= 30 \
-                        and not playerCar.slowing:
+                    if math.floor((main.speed - 0.05) * 50) >= 30:
+                        #and not playerCar.slowing:
                         main.speed -= 0.05
 
 
@@ -298,7 +300,7 @@ def car_racing():
             player_car_mask = playerCar.create_mask()
 
             ''' Pixel perfect collision between player and cars '''
-            for car in all_coming_cars:
+            for car in main.all_coming_cars:
                 coming_cars_masks = car.create_mask()
                 offset = (int(car.rect.x - playerCar.rect.x), int(car.rect.y - playerCar.rect.y))
                 collision_point = player_car_mask.overlap(coming_cars_masks, offset)
@@ -355,13 +357,17 @@ def car_racing():
 
             ''' Respawn cars '''
             if(not pause):
-                for car in all_coming_cars:
+                for car in main.all_coming_cars:
                     car.moveForward(main.speed)
                     if car.rect.y > SCREENHEIGHT:
                         car.changeSpeed(random.randint(50,100))
                         car.repaint()
                         car.rect.y = random.randint(-1000, -100)
                         score_value += 1
+
+                    if main.slowing_active:
+                        car.image = pygame.image.load(f'assets/car_slowing.png').convert_alpha()
+                    
             
             
             ''' Respawn power ups '''
