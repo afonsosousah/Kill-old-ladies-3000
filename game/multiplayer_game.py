@@ -73,6 +73,15 @@ def multiplayer_racing():
     #This will be a list that will contain all the sprites we intend to use in our game.
     all_sprites_list = pygame.sprite.Group()
     
+    # List of available car indexes
+    car_models = [1, 2, 3, 4, 5, 6]
+
+    # Remove the selected car from the list
+    if main.selected_car  in car_models:
+        car_models.remove(main.selected_car)
+    if main.selected_car2 in car_models:
+        car_models.remove(main.selected_car2)
+    
     # Define where the enemies spawn
     carSpawnLocationsX = (195, 315, 435, 555) # spawn in each lane of the map
 
@@ -84,19 +93,19 @@ def multiplayer_racing():
     playerCar2.rect.x = SCREENWIDTH/2 + 60
     playerCar2.rect.y = SCREENHEIGHT - 110
 
-    car1 = Car(60, 80, random.randint(50,100), random.randint(1,6))
+    car1 = Car(60, 80, random.randint(50,100), random.choice(car_models))
     car1.rect.x = carSpawnLocationsX[0]
     car1.rect.y = -100
 
-    car2 = Car(60, 80, random.randint(50,100), random.randint(1,6))
+    car2 = Car(60, 80, random.randint(50,100), random.choice(car_models))
     car2.rect.x = carSpawnLocationsX[1]
     car2.rect.y = -600
 
-    car3 = Car(60, 80, random.randint(50,100), random.randint(1,6))
+    car3 = Car(60, 80, random.randint(50,100), random.choice(car_models))
     car3.rect.x = carSpawnLocationsX[2]
     car3.rect.y = -300
 
-    car4 = Car(60, 80, random.randint(50,100), random.randint(1,6))
+    car4 = Car(60, 80, random.randint(50,100), random.choice(car_models))
     car4.rect.x = carSpawnLocationsX[3]
     car4.rect.y = -1000
     
@@ -108,8 +117,7 @@ def multiplayer_racing():
     # Create a list of the enemy cars
     all_coming_cars = pygame.sprite.Group()
     all_coming_cars.add(car1, car2, car3, car4)
-    
-    
+
     # Define where the power ups spawn
     powerUpSpawnLocationsX = (250, 390, 500)  # spawn in the middle of the lanes
     

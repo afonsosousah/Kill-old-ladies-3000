@@ -36,6 +36,13 @@ def multiplayer_car_selector():
     font = pygame.font.Font('fonts/MASQUE__.ttf', 28)
     play_text = font.render('Play', True, white)
     back_text = font.render('Back', True, white)
+
+    # creating player1 and player2 text
+    font = pygame.font.Font('fonts/MASQUE__.ttf', 28)
+    player1_text = font.render('Player One', True, white)
+    player1_rect = player1_text.get_rect(center = (200,170))
+    player2_text = font.render('Player Two', True, white)
+    player2_rect = player1_text.get_rect(center = (520,170))
     
     # Allowing the user to close the window...
     carryOn = True
@@ -120,7 +127,7 @@ def multiplayer_car_selector():
                             main.selected_car2 -= 2
                         else:
                             main.selected_car2 = 6
-                        
+            
         # Infinite scrolling map as background
         screen.blit(MAP, [0, mapY0, 720, 1080])
         screen.blit(MAP, [0, mapY1, 720, 1080])
@@ -173,7 +180,12 @@ def multiplayer_car_selector():
         # draw the other change selected car buttons
         pygame.draw.polygon(screen, color_light, ((451,250), (451,330), (386,290)))
         pygame.draw.polygon(screen, color_light, ((591,250), (591,330), (656,290)))
+
+        # player1 and player2 text
+        screen.blit(player1_text, player1_rect)
+        screen.blit(player2_text, player2_rect)
         
         # PYGAME BUILT IN FUCTION that updates the screen at every oteration of the loop
         pygame.display.update()
+
 
